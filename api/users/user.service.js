@@ -31,10 +31,11 @@ module.exports = {
         );
         pool.query(
           
-        ` INSERT INTO sub_id_registration (userid, cardno, date) 
-        VALUES (?, ?, ?);`,
+        ` INSERT INTO sub_id_registration (userid,empid, cardno, date) 
+        VALUES (?, ?,?, ?);`,
    [
        data.userid,
+       data.empcode,
        data.cardno,
        data.date
    ]
@@ -61,6 +62,30 @@ module.exports = {
         pool.query(`select * from registration where userid=?`,
         [id],
         (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    getUserByempId:(empid,callback)=>{
+        pool.query(`select count(*) as total_users from sub_id_registration where empid=?`,
+        [empid],
+        (error,results,fiels)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    getCurrentUserEmpId:(cardno,callback)=>{
+        pool.query(`select empid from sub_id_registration where cardno=?`,
+        [cardno],
+        (error,results,fiels)=>{
             if(error)
             {
               return  callback(error);
@@ -117,7 +142,7 @@ module.exports = {
     },
     getUserByuserEmail:(email,callack)=>{
         pool.query(
-            `select * from registration where email = ?`,
+            `select * from user_registration where userid = ?`,
             [email],
             (error,results,fields)=>{
                 if(error)

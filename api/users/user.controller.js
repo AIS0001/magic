@@ -1,4 +1,4 @@
-const { create,getMaxLevel,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
+const { create,getMaxLevel,getUserByempId,getCurrentUserEmpId,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
@@ -37,13 +37,46 @@ module.exports ={
                     message:"Database connection error ahoooo"
                 });
             }
-            return res.status(200).json({
+          
+        });
+//get employee id by cardno
+
+  const empid = body.empcode;
+        getUserByempId(empid,(err,tusers)=>{
+            if(err)
+            {
+                console.log(err);
+                return;
+            }
+            if(!tusers)
+            {
+                return res.json({
+                    success:0,
+                    message:"Unable to get Total user record by empid"
+                });
+            }
+         //   console.log(res.get(tusers));
+            //Pool Amount Distribution
+            const cardAmount = 500;
+            const pool1Amount = cardAmount*0.40;
+            const pool2Amount = cardAmount*0.30;
+            const pool3Amount = cardAmount*0.25;
+            const pool4Amount = cardAmount*0.15;
+            const poolwiseUsers =tusers.total_users*0.25; 
+            //pool amount distribution
+            return res.json({
+               // console.log(pool1Amount);
                 success:1,
-                data:results
+                pool1Amount:pool1Amount,
+                pool2Amount:pool2Amount,
+                pool3Amount:pool3Amount,
+                pool4Amount:pool4Amount,
+                poolwiseUsers:poolwiseUsers,
+                //data:results,
+                users:tusers 
+
 
             });
-            
-
         });
     },
     getUserByid:(req,res)=>{
@@ -133,7 +166,7 @@ module.exports ={
 
     login:(req,res)=>{
         const body = req.body;
-        getUserByuserEmail(body.email,(err,results)=>{
+        getUserByuserEmail(body.userid,(err,results)=>{
             if(err)
             {
                 console.log(err);
@@ -143,7 +176,7 @@ module.exports ={
             {
                return res.json({
                 success:0,
-                data:"Invalid Email or Password"
+                data:"Invalid userid or Password"
 
                }) ;
           
