@@ -32,20 +32,12 @@ module.exports = {
         pool.query(
           
         ` INSERT INTO sub_id_registration (userid, cardno, date) 
-        VALUES (?, ?, ?, ?);`,
+        VALUES (?, ?, ?);`,
    [
        data.userid,
        data.cardno,
        data.date
-   ],
-       
-        (error,results,fields)=>{
-            if(error)
-            {
-                return callback(error);
-            }
-            return callback(null,results);
-        }
+   ]
 
         );
     },
