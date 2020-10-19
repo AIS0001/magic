@@ -1,7 +1,7 @@
 const pool = require("../../config/database");
 
 module.exports = {
-    create:(data,level_data,callback)=>{
+    create:(data,callback)=>{
         pool.query(
             `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?)`,
@@ -48,8 +48,6 @@ module.exports = {
         }
 
         );
-
-
     },
 
     getUsers:callback=>{

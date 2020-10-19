@@ -23,13 +23,12 @@ module.exports ={
             });
         });
     },
-
     createUser:(req,res)=>{
-        
+
         const body =req.body;
         const salt = genSaltSync(10);
         body.password=hashSync(body.password,salt);
-        create(body,level_result,(err,results)=>{
+        create(body,(err,results)=>{
             if(err)
             {
                 console.log(err);
@@ -40,14 +39,11 @@ module.exports ={
             }
             return res.status(200).json({
                 success:1,
-                data:results,
-                level_data:level_result
+                data:results
 
             });
 
         });
-
-        
     },
     getUserByid:(req,res)=>{
         const id = req.param.id;
