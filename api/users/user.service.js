@@ -1,10 +1,10 @@
 const pool = require("../../config/database");
 
 module.exports = {
-    create:(data,callback)=>{
+    create:(data,level_data,callback)=>{
         pool.query(
-            `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode, status, flag)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?)`,
         [
             data.userid,
             data.password,
@@ -18,9 +18,8 @@ module.exports = {
             data.refcode,
             data.cardno,
             data.payment_mode,
-            data.status,
-            data.flag,
         ],
+    
         (error,results,fields)=>{
             if(error)
             {
@@ -30,6 +29,27 @@ module.exports = {
         }
 
         );
+        pool.query(
+          
+        ` INSERT INTO sub_id_registration (userid, cardno, date) 
+        VALUES (?, ?, ?, ?);`,
+   [
+       data.userid,
+       data.cardno,
+       data.date
+   ],
+       
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+
+        );
+
+
     },
 
     getUsers:callback=>{
@@ -50,6 +70,19 @@ module.exports = {
     getUserByid:(id,callback)=>{
         pool.query(`select * from registration where userid=?`,
         [id],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+
+    getMaxLevel:(callback)=>{
+        pool.query(`select max(id) as id from sub_id_registration `,
+        [],
         (error,results,fields)=>{
             if(error)
             {

@@ -1,14 +1,35 @@
-const { create,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
+const { create,getMaxLevel,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
+    maxlevel:(req,res)=>{
+
+        getMaxLevel((err,results)=>{
+            if(err)
+            {
+                console.log(err);
+                return;
+            }
+            if(!results)
+            {
+                return res.json({
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                success:1,
+                level_result:results 
+            });
+        });
+    },
 
     createUser:(req,res)=>{
-
+        
         const body =req.body;
         const salt = genSaltSync(10);
         body.password=hashSync(body.password,salt);
-        create(body,(err,results)=>{
+        create(body,level_result,(err,results)=>{
             if(err)
             {
                 console.log(err);
@@ -19,11 +40,14 @@ module.exports ={
             }
             return res.status(200).json({
                 success:1,
-                data:results
+                data:results,
+                level_data:level_result
 
             });
 
         });
+
+        
     },
     getUserByid:(req,res)=>{
         const id = req.param.id;
