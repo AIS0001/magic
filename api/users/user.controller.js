@@ -1,6 +1,7 @@
-const { create,getMaxLevel,getUserByempId,getCurrentUserEmpId,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
+const { create,getMaxLevel,getUserByempId,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
+const { CreateToken } = require("./token.middleware");
 module.exports ={
     maxlevel:(req,res)=>{
 
@@ -23,18 +24,23 @@ module.exports ={
             });
         });
     },
+    
     createUser:(req,res)=>{
 
         const body =req.body;
+        
         const salt = genSaltSync(10);
+        //console.log(body);
+        //console.log(body.password);
         body.password=hashSync(body.password,salt);
         create(body,(err,results)=>{
             if(err)
             {
                 console.log(err);
                 return res.status(500).json({
+                    status:500,
                     success:0,
-                    message:"Database connection error ahoooo"
+                    message:"500 Internal Server Error"
                 });
             }
           
@@ -188,11 +194,32 @@ module.exports ={
                 const jwt = sign({result,results},"TXlMb3ZlUHJpeWFua2E=",{
                     expiresIn:"1h"
                 });
-                return res.json({
+                
+                insertToken(body.userid,jwt,(err,results)=>{
+                    if(err)
+                    {
+                        console.log(err);
+                        return res.status(500).json({
+                            status:500,
+                            success:0,
+                            message:"500 Internal Server Error"
+                        });
+                    }
+                    
+                    
+                  
+                })
+                return res.status(200).json({
                     success:1,
                     message:"logged in successfully",
+                    type:"User",
+                    data:results,
+                    status:200,
                     token:jwt
-                });
+                })
+                
+              
+
             }
             else{
                 return res.jason({

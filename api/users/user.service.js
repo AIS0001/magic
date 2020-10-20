@@ -3,8 +3,8 @@ const pool = require("../../config/database");
 module.exports = {
     create:(data,callback)=>{
         pool.query(
-            `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?)`,
+            `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode,type)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
         [
             data.userid,
             data.password,
@@ -18,6 +18,7 @@ module.exports = {
             data.refcode,
             data.cardno,
             data.payment_mode,
+            data.type,
         ],
     
         (error,results,fields)=>{
@@ -42,6 +43,37 @@ module.exports = {
 
         );
     },
+    insertToken:(userid,data,callback)=>{
+        pool.query(
+            `INSERT INTO active_token (userid, token) VALUES (?, ?);`,
+        [
+            userid,
+          data  
+        ],
+    
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+
+        );
+        pool.query(
+          
+        ` INSERT INTO sub_id_registration (userid,empid, cardno, date) 
+        VALUES (?, ?,?, ?);`,
+   [
+       data.userid,
+       data.empcode,
+       data.cardno,
+       data.date
+   ]
+
+        );
+    },
+
 
     getUsers:callback=>{
         pool.query(`select * from registration`,
