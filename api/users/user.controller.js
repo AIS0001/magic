@@ -212,7 +212,6 @@ module.exports ={
                 return res.status(200).json({
                     success:1,
                     message:"logged in successfully",
-                    type:"User",
                     data:results,
                     status:200,
                     token:jwt
