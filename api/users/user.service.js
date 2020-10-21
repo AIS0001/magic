@@ -48,7 +48,7 @@ module.exports = {
             `INSERT INTO active_token (userid, token) VALUES (?, ?);`,
         [
             userid,
-          data  
+             data  
         ],
     
         (error,results,fields)=>{
@@ -58,7 +58,6 @@ module.exports = {
             }
             return callback(null,results);
         }
-
         );
         pool.query(
           
@@ -70,15 +69,66 @@ module.exports = {
        data.cardno,
        data.date
    ]
-
         );
+        
     },
 
 
-    getUsers:callback=>{
-        pool.query(`select * from registration`,
-        [
+    refIncome:(poolData,usertype,uid,dte,callback)=>{
+        //check user type
+       if(usertype=="user")
+        {
+            pool.query( `INSERT INTO ref_income (userid, amount, date) VALUES ( ?, ?, ?);`,
+           [
+               uid,
+               poolData,
+               dte
+           ]
+                );
+        }
+        
+    },
 
+    getUsersByEmpID:(id,callback)=>{
+        pool.query(`SELECT userid FROM sub_id_registration where empid=? AND status='1' `,
+        [ id ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+
+        //get referral income by user id
+    getRefIncomeByUserId:(uid,callback)=>{
+        pool.query(`SELECT * FROM ref_income where userid=? `,
+        [ uid ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+
+            // sum of refferal Income
+      getTotalRefIncome:(uid,callback)=>{
+                pool.query(`SELECT IFNULL(sum(amount),0) as amount FROM ref_income where userid=? `,
+                [ uid ],
+                (error,results,fields)=>{
+                    if(error)
+                    {
+                      return  callback(error);
+                    }
+                    return callback(null,results);
+                } );
+            },
+    getUsers:callback=>{
+        pool.query(`select * from user_registration`,
+        [
         ],
         (error,results,fields)=>{
             if(error)
@@ -91,7 +141,7 @@ module.exports = {
     },
 
     getUserByid:(id,callback)=>{
-        pool.query(`select * from registration where userid=?`,
+        pool.query(`select * from user_registration where userid=?`,
         [id],
         (error,results,fields)=>{
             if(error)
@@ -102,8 +152,8 @@ module.exports = {
         }
         );
     },
-    getUserByempId:(empid,callback)=>{
-        pool.query(`select count(*) as total_users from sub_id_registration where empid=?`,
+    getTotalUserByempId:(empid,callback)=>{
+        pool.query(`select count(*) as total_users from sub_id_registration where empid=? `,
         [empid],
         (error,results,fiels)=>{
             if(error)
@@ -141,7 +191,7 @@ module.exports = {
     },
 
     updateUser:(data,callback)=>{
-        pool.query(`update registration set fname=?,lname-?,gender=?,email=?,password=?,contact=? where id=?`,
+        pool.query(`update user_registration set fname=?,lname-?,gender=?,email=?,password=?,contact=? where id=?`,
         [
             data.fname,
             data.lname,
@@ -161,7 +211,7 @@ module.exports = {
         );
     },
     deleteUser:(data,callback)=>{
-        pool.query(`delete from registration where id=?`,
+        pool.query(`delete from user_registration where id=?`,
         [data.id],
         (error,results,fields)=>{
             if(error)
