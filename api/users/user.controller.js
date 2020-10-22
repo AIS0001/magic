@@ -1,4 +1,4 @@
-const { create,getMaxLevel,getTotalUserByempId,getTotalRefIncome,refIncome,getRefIncomeByUserId,getUsersByEmpID,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
+const { create,getMaxLevel,getTotalUserByempId,insertCompanyWallet,getTotalRefIncome,refIncome,getRefIncomeByUserId,getUsersByEmpID,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 const { CreateToken } = require("./token.middleware");
@@ -174,9 +174,10 @@ module.exports ={
           const refid = body.refcode;
          // console.log(uid);
           const dte = body.date;
+          const usertype1 = body.type;
          // console.log(dte);
 
-          refIncome(poll1UserAmount,usertype,refid,dte,(err,poolDataresults)=>{
+          refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
               if(err)
               {
                   console.log(err);
@@ -192,8 +193,44 @@ module.exports ={
             
               
           });
-      
-    
+         console.log(usertype);
+         var uremark = ""
+          if(usertype1=="user")
+          {
+             uremark = "User account activation fee";
+          }
+          else  if(usertype1=="vendor")
+          {
+            uremark = "Vendor  fee";
+          }
+          else  if(usertype1=="employee")
+          {
+            uremark = "Employee Fee  Activated";
+
+          }
+          else{
+               uremark = "";
+          }
+          insertCompanyWallet(body.userid,usertype,companyShare,uremark,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+             //    console.log(body);
+                return res.status(500).json({
+                    status:500,
+                    success:0,
+                    message:"500 Internal Server Error"
+                });
+            }
+            //console.log(body);
+           /* return res.status(200).json({
+                // console.log(pool1Amount);
+                 success:1,
+                 status:200
+             });*/
+        });
+        //get employee id by cardno
+     
    
     },
     getUserByid:(req,res)=>{

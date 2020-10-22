@@ -43,6 +43,25 @@ module.exports = {
 
         );
     },
+    insertCompanyWallet:(userid,usrtype,uamount,remark,callback)=>{
+        pool.query(
+            `INSERT INTO company_wallet ( userid, type, amount, remark) VALUES (?, ?, ?, ?);`,
+        [
+            userid,
+            usrtype,
+            uamount,
+            remark  
+        ],
+    
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
     insertToken:(userid,data,callback)=>{
         pool.query(
             `INSERT INTO active_token (userid, token) VALUES (?, ?);`,
@@ -59,18 +78,6 @@ module.exports = {
             return callback(null,results);
         }
         );
-        pool.query(
-          
-        ` INSERT INTO sub_id_registration (userid,empid, cardno, date) 
-        VALUES (?, ?,?, ?);`,
-   [
-       data.userid,
-       data.empcode,
-       data.cardno,
-       data.date
-   ]
-        );
-        
     },
 
 
