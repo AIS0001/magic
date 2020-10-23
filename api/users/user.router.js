@@ -3,8 +3,8 @@ const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 
 router.post("/create",createUser);
-router.get("/referralincome/:id",referralIncome);
-router.get("/totalref/:id",totalRefIncome);
+router.post("/referralincome",referralIncome);
+router.post("/totalref",totalRefIncome);
 router.post("/usertoken",userToken);
 router.post("/directdownline",directDownlineMembers);
 

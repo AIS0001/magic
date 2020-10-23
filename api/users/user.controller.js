@@ -25,9 +25,9 @@ module.exports ={
         });
     },
     referralIncome:(req,res)=>{
-        const uid = req.params.id;
-        console.log(uid);
-        getRefIncomeByUserId(uid,(err,income)=>{
+        const body = req.body;
+        //console.log(uid);
+        getRefIncomeByUserId(body,(err,income)=>{
            
             if(err)
             {
@@ -49,9 +49,9 @@ module.exports ={
     },
     //Total ref Income
     totalRefIncome:(req,res)=>{
-        const uid = req.params.id;
+        const body = req.body;
         
-        getTotalRefIncome(uid,(err,total_income)=>{
+        getTotalRefIncome(body,(err,total_income)=>{
             if(err)
             {
                 console.log(err);

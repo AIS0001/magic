@@ -131,9 +131,9 @@ module.exports = {
     },
 
         //get referral income by user id
-    getRefIncomeByUserId:(uid,callback)=>{
+    getRefIncomeByUserId:(data,callback)=>{
         pool.query(`SELECT * FROM ref_income where userid=? `,
-        [ uid ],
+        [ data.userid ],
         (error,results,fields)=>{
             if(error)
             {
@@ -144,9 +144,9 @@ module.exports = {
     },
 
             // sum of refferal Income
-    getTotalRefIncome:(uid,callback)=>{
+    getTotalRefIncome:(data,callback)=>{
                 pool.query(`SELECT IFNULL(sum(amount),0) as amount FROM ref_income where userid=? `,
-                [ uid ],
+                [ data.userid ],
                 (error,results,fields)=>{
                     if(error)
                     {
