@@ -1,7 +1,7 @@
-const { create,getMaxLevel,getTotalUserByempId,insertCompanyWallet,getTotalRefIncome,refIncome,getRefIncomeByUserId,getUsersByEmpID,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
+const { create,getUsersByToken,directdownline,getMaxLevel,getTotalUserByempId,insertCompanyWallet,getTotalRefIncome,refIncome,getRefIncomeByUserId,getUsersByEmpID,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
-const { CreateToken } = require("./token.middleware");
+//const { CreateToken } = require("./token.middleware");
 module.exports ={
     maxlevel:(req,res)=>{
 
@@ -233,9 +233,61 @@ module.exports ={
      
    
     },
+    userToken:(req,res)=>{
+        const body = req.body;
+        getUsersByToken(body,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+                return;
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found",
+                   
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
+    //Direct refferal
+    directDownlineMembers:(req,res)=>{
+        const body = req.body;
+        
+        directdownline(body,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+                return;
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found",
+                   
+                });
+            }
+            console.log(results);
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
+
     getUserByid:(req,res)=>{
-        const id = req.param.id;
-        getUserByid(id,(err,results)=>{
+        const body = req.body;
+        getUserByid(body,(err,results)=>{
             if(err)
             {
                 console.log(err);

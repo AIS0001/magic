@@ -95,6 +95,28 @@ module.exports = {
         }
         
     },
+    getUsersByToken:(data,callback)=>{
+        pool.query(`SELECT *  FROM active_token where token=?  `,
+        [ data.id ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+    directdownline:(data,callback)=>{
+        pool.query(`SELECT cname,contact,address,date FROM user_registration where refcode=?`,
+        [ data.userid ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
 
     getUsersByEmpID:(id,callback)=>{
         pool.query(`SELECT userid FROM sub_id_registration where empid=? AND status='1' `,
@@ -122,7 +144,7 @@ module.exports = {
     },
 
             // sum of refferal Income
-      getTotalRefIncome:(uid,callback)=>{
+    getTotalRefIncome:(uid,callback)=>{
                 pool.query(`SELECT IFNULL(sum(amount),0) as amount FROM ref_income where userid=? `,
                 [ uid ],
                 (error,results,fields)=>{
@@ -147,9 +169,9 @@ module.exports = {
         );
     },
 
-    getUserByid:(id,callback)=>{
+    getUserByid:(data,callback)=>{
         pool.query(`select * from user_registration where userid=?`,
-        [id],
+        [data.id],
         (error,results,fields)=>{
             if(error)
             {
