@@ -1,4 +1,4 @@
-const { create,getUsersByToken,directdownline,getMaxLevel,getTotalUserByempId,insertCompanyWallet,getTotalRefIncome,refIncome,getRefIncomeByUserId,getUsersByEmpID,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
+const { create,getUsersByToken,directdownline,insertCategory,getcashbackIncomeByUserId,insertEmployeeWallet,getMaxLevel,getTotalUserByempId,insertCompanyWallet,getTotalRefIncome,refIncome,getRefIncomeByUserId,getUsersByEmpID,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 //const { CreateToken } = require("./token.middleware");
@@ -47,6 +47,29 @@ module.exports ={
             });
         });
     },
+    cashBackIncome:(req,res)=>{
+        const body = req.body;
+        //console.log(uid);
+        getcashbackIncomeByUserId(body,(err,income)=>{
+           
+            if(err)
+            {
+                console.log(err);
+                return;
+            }
+            if(!income)
+            {
+                return res.status(404).json({
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                success:1,
+                data:income 
+            });
+        });
+    },
     //Total ref Income
     totalRefIncome:(req,res)=>{
         const body = req.body;
@@ -70,7 +93,30 @@ module.exports ={
             });
         });
     },
-    
+    addCategory:(req,res)=>{
+        const body = req.body;
+        insertCategory(body,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+             //    console.log(body);
+                return res.status(500).json({
+                    status:500,
+                    success:0,
+                    message:"500 Internal Server Error"
+                });
+            }
+            //console.log(body);
+         return res.status(200).json({
+                // console.log(pool1Amount);
+                status:200,
+                 success:1,
+                 status:200
+             });
+        });
+        
+    },
+
     createUser:(req,res)=>{
 
         const body =req.body;
@@ -140,9 +186,7 @@ module.exports ={
                 users:tusers 
             });*/
         });
-      
-
-       //////////////////////
+      //////////////////////
        const cardAmount = 500;
        const companyShare = cardAmount*0.40;
        const empShare = cardAmount*0.20;
@@ -176,28 +220,89 @@ module.exports ={
           const dte = body.date;
           const usertype1 = body.type;
          // console.log(dte);
-
-          refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
-              if(err)
-              {
-                  console.log(err);
-                  return;
-              }
-              if(!poolDataresults)
-              {
-                  return res.json({
-                      success:0,
-                      message:"Something in pool /cashback data calculation"
-                  });
-              }
-            
+          if(refid!="")
+          {
+            refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
+                if(err)
+                {
+                    console.log(err);
+                    return;
+                }
+                if(!poolDataresults)
+                {
+                    return res.json({
+                        success:0,
+                        message:"Something in pool /cashback data calculation"
+                    });
+                }
               
-          });
-         console.log(usertype);
+                
+            });
+          
+          }
+         // console.log(usertype);
          var uremark = ""
+         var eremark = "ESC"
           if(usertype1=="user")
           {
              uremark = "User account activation fee";
+             insertCompanyWallet(body.userid,usertype,companyShare,uremark,(err,results)=>{
+                if(err)
+                {
+                    console.log(err);
+                 //    console.log(body);
+                    return res.status(500).json({
+                        status:500,
+                        success:0,
+                        message:"500 Internal Server Error"
+                    });
+                }
+                //console.log(body);
+               /* return res.status(200).json({
+                    // console.log(pool1Amount);
+                     success:1,
+                     status:200
+                 });*/
+            });
+            insertEmployeeWallet(body.userid,body.empcode,empShare,uremark,(err,results)=>{
+                if(err)
+                {
+                    console.log(err);
+                 //    console.log(body);
+                    return res.status(500).json({
+                        status:500,
+                        success:0,
+                        message:"500 Internal Server Error"
+                    });
+                }
+                //console.log(body);
+               /* return res.status(200).json({
+                    // console.log(pool1Amount);
+                     success:1,
+                     status:200
+                 });*/
+            });
+           //Cash Back Income
+           /* while(poolwiseUsers>=1)
+            {
+                cashBackIncome(body.userid,companyShare,dte,poolwiseUsers,poolwiseUsers,(err,results)=>{
+                    if(err)
+                    {
+                        console.log(err);
+                        return;
+                    }
+                    if(!poolDataresults)
+                    {
+                        return res.json({
+                            success:0,
+                            message:"Something in pool /cashback data calculation"
+                        });
+                    }
+                });
+                poolwiseUsers--;
+            }*/
+            //Cash abck income end
+            
           }
           else  if(usertype1=="vendor")
           {
@@ -211,24 +316,8 @@ module.exports ={
           else{
                uremark = "";
           }
-          insertCompanyWallet(body.userid,usertype,companyShare,uremark,(err,results)=>{
-            if(err)
-            {
-                console.log(err);
-             //    console.log(body);
-                return res.status(500).json({
-                    status:500,
-                    success:0,
-                    message:"500 Internal Server Error"
-                });
-            }
-            //console.log(body);
-           /* return res.status(200).json({
-                // console.log(pool1Amount);
-                 success:1,
-                 status:200
-             });*/
-        });
+
+        
         //get employee id by cardno
      
    

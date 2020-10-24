@@ -2,6 +2,7 @@ const pool = require("../../config/database");
 
 module.exports = {
     create:(data,callback)=>{
+        var userid = Math.random() * (999 - low) + low
         pool.query(
             `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode,type)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
@@ -43,12 +44,47 @@ module.exports = {
 
         );
     },
+    insertCategory:(data,callback)=>{
+        pool.query(
+            `INSERT INTO category(userid,cat_name)VALUES(?, ?);`,
+        [
+            data.userid,
+            data.cat_name
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
     insertCompanyWallet:(userid,usrtype,uamount,remark,callback)=>{
         pool.query(
             `INSERT INTO company_wallet ( userid, type, amount, remark) VALUES (?, ?, ?, ?);`,
         [
             userid,
             usrtype,
+            uamount,
+            remark  
+        ],
+    
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    insertEmployeeWallet:(userid,empid,uamount,remark,callback)=>{
+        pool.query(
+            `INSERT INTO employee_wallet ( userid, empid, amount, remark) VALUES (?, ?, ?, ?);`,
+        [
+            userid,
+            empid,
             uamount,
             remark  
         ],
@@ -79,7 +115,22 @@ module.exports = {
         }
         );
     },
-
+    cashBackIncome:(uid,amount,dte,lmt,ofset ,callback)=>{
+        //check user type
+       if(usertype=="user")
+        {
+            pool.query( `INSERT INTO cashback (userid, amount, date) VALUES ( ?, ?, ?) limit ? OFFSET ? `,
+           [
+               uid,
+               amount,
+               dte,
+               lmt,
+               ofset
+           ]
+                );
+        }
+        
+    },
 
     refIncome:(poolData,usertype,uid,dte,callback)=>{
         //check user type
@@ -142,7 +193,18 @@ module.exports = {
             return callback(null,results);
         } );
     },
-
+    getcashbackIncomeByUserId:(data,callback)=>{
+        pool.query(`SELECT * FROM cashback where userid=? `,
+        [ data.userid ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+    
             // sum of refferal Income
     getTotalRefIncome:(data,callback)=>{
                 pool.query(`SELECT IFNULL(sum(amount),0) as amount FROM ref_income where userid=? `,
