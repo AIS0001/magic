@@ -321,10 +321,10 @@ module.exports ={
     //on referesh get user token details
     userToken:(req,res)=>{
         const body = req.header("auth_token");
-        console.log(body);
+       // console.log(body);
        // const tokenresult=[ ];
       const tkn = body
-        getUsersByToken( tkn ,(err,tokenresult)=>{
+        getUsersByToken(tkn ,(err,tokenresult)=>{
             if(err)
             {
                 console.log(err);
@@ -341,18 +341,35 @@ module.exports ={
                 });
             }
            
-            return res.json({
-                status:200,
-                success:1,
-                userdata:tokenresult 
+            getUserByid( tokenresult[0] ,(err,results)=>{
+                if(err)
+                {
+                    console.log(err);
+                    return;
+                }
+                if(!results)
+                {
+                    return res.json({
+                        status:401,
+                        success:0,
+                        message:"Record not found",
+                       
+                    });
+                }
+                return res.json({
+                    status:200,
+                    success:1,
+                    data:results 
+                });
             })
-          //console.log(userdata);
-    
-           
-        })
-    
+          //console.log(tokenresult[0].userid);
+           /*tokenresult && tokenresult.map((test)=>{
+               console.log(test);
+           }
+           )*/
        
-        },
+        })
+    },
     //Direct refferal
     directDownlineMembers:(req,res)=>{
         const body = req.body;
