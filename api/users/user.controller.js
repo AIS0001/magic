@@ -316,36 +316,43 @@ module.exports ={
           else{
                uremark = "";
           }
-
-        
-        //get employee id by cardno
-     
    
     },
+    //on referesh get user token details
     userToken:(req,res)=>{
-        const body = req.body;
-        getUsersByToken(body,(err,results)=>{
+        const body = req.header("auth_token");
+        console.log(body);
+       // const tokenresult=[ ];
+      const tkn = body
+        getUsersByToken( tkn ,(err,tokenresult)=>{
             if(err)
             {
                 console.log(err);
                 return;
             }
-            if(!results)
+            if(!tokenresult)
             {
                 return res.json({
                     status:401,
+                    tkn:tkn,
                     success:0,
                     message:"Record not found",
                    
                 });
             }
+           
             return res.json({
                 status:200,
                 success:1,
-                data:results 
-            });
-        });
-    },
+                userdata:tokenresult 
+            })
+          //console.log(userdata);
+    
+           
+        })
+    
+       
+        },
     //Direct refferal
     directDownlineMembers:(req,res)=>{
         const body = req.body;

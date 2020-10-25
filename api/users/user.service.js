@@ -45,7 +45,7 @@ module.exports = {
         );
     },
     insertCategory:(data,callback)=>{
-        pool.query(
+        pool.query(         
             `INSERT INTO category(userid,cat_name)VALUES(?, ?);`,
         [
             data.userid,
@@ -146,9 +146,9 @@ module.exports = {
         }
         
     },
-    getUsersByToken:(data,callback)=>{
-        pool.query(`SELECT *  FROM active_token where token=?  `,
-        [ data.id ],
+    getUsersByToken:(auth_token,callback)=>{
+        pool.query(`SELECT *  FROM active_token where token= ? `,
+        [ auth_token],
         (error,results,fields)=>{
             if(error)
             {
@@ -233,7 +233,7 @@ module.exports = {
 
     getUserByid:(data,callback)=>{
         pool.query(`select * from user_registration where userid=?`,
-        [data.id],
+        [data.userid],
         (error,results,fields)=>{
             if(error)
             {
