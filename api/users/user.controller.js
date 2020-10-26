@@ -359,7 +359,7 @@ module.exports ={
                 return res.json({
                     status:200,
                     success:1,
-                    token:tokenresult,
+                    token:tokenresult[0].token,
                     data:results 
                 });
             })
