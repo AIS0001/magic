@@ -2,13 +2,13 @@ const { createUser,maxlevel,directDownlineMembers,addCategory,cashBackIncome,use
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 
-router.post("/create",createUser);
-router.post("/referralincome",referralIncome);
-router.post("/totalref",totalRefIncome);
+router.post("/create",userToken,createUser);
+router.post("/referralincome",userToken,referralIncome);
+router.post("/totalref",userToken,totalRefIncome);
 router.post("/usertoken",userToken);
 router.post("/directdownline",checkToken , directDownlineMembers);
-router.post("/cashbackincome",cashBackIncome);
-router.post("/newcategory",addCategory);
+router.post("/cashbackincome",userToken,cashBackIncome);
+router.post("/newcategory",userToken,addCategory);
 
 
 router.get("/maxlevel",checkToken,maxlevel);
