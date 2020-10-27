@@ -6,7 +6,7 @@ module.exports = {
         var userid = Math.floor(Math.random() * 100000) ;
         pool.query(
             `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode,type)
-             VALUES (userid, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
         [
             userid,
             pwd,
