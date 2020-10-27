@@ -123,7 +123,9 @@ module.exports ={
         const salt = genSaltSync(10);
         const empid = body.empcode;
         //console.log(body.password);
-        body.password=hashSync(body.password,salt);
+        //body.password=hashSync(body.password,salt);
+        var password = "welcome@123" ;
+        password=hashSync(password,salt);
           //get total cashBack user list
           getUsersByEmpID(empid,(err,results)=>{
             if(err)
@@ -146,7 +148,7 @@ module.exports ={
             });
         });
 
-        create(body,(err,results)=>{
+        create(body,password,(err,results)=>{
             if(err)
             {
                 console.log(err);
