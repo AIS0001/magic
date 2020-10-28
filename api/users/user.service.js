@@ -2,13 +2,14 @@ const pool = require("../../config/database");
 
 module.exports = {
     create:(data,pwd,callback)=>{
-        var low =2000;
-        var userid = Math.floor(Math.random() * 100000) ;
+       
+        var uid = Math.floor(Math.random() * 100000) ;
+        //console.log(pwd);
         pool.query(
             `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode,type)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
-        [
-            userid, 
+        [   
+            uid, 
             pwd,
             data.cname,
             data.contact,

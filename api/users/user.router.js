@@ -5,7 +5,7 @@ const { checkToken } = require("../../auth/token_validation");
 router.post("/create",userToken,createUser);
 router.post("/referralincome",userToken,referralIncome);
 router.post("/totalref",userToken,totalRefIncome);
-router.post("/usertoken",userToken);
+//router.post("/usertoken",userToken);
 router.post("/directdownline",checkToken , directDownlineMembers);
 router.post("/cashbackincome",userToken,cashBackIncome);
 router.post("/newcategory",userToken,addCategory);
