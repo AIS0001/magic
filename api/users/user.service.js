@@ -2,8 +2,6 @@ const pool = require("../../config/database");
 
 module.exports = {
     create:(data,pwd,uid,callback)=>{
-       
-       
        // console.log(uid);
         pool.query(
             `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode,type)

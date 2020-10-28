@@ -10,10 +10,8 @@ router.post("/directdownline",checkToken , directDownlineMembers);
 router.post("/cashbackincome",checkToken,cashBackIncome);
 router.post("/newcategory",checkToken,addCategory);
 
-
 router.get("/maxlevel",checkToken,maxlevel);
 router.get("/",checkToken,getUsers);
-
 router.post("/userdata",checkToken,getUserByid);
 
 //router.patch("/",checkToken,updateUser);
