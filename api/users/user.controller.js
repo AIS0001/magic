@@ -127,6 +127,7 @@ module.exports ={
         const body =req.body;
         const salt = genSaltSync(10);
         const empid = body.empcode;
+        var uid = Math.floor(Math.random() * 100000) ;
         //console.log(body.password);
         //body.password=hashSync(body.password,salt);
         var password = "welcome@123" ;
@@ -153,7 +154,7 @@ module.exports ={
             });
         });
 
-        create(body,password,(err,results)=>{
+        create(body,password,uid,(err,results)=>{
             if(err)
             {
                 console.log(err);
@@ -165,11 +166,11 @@ module.exports ={
                 });
             }
             //console.log(body);
-           /* return res.status(200).json({
+            return res.status(200).json({
                 // console.log(pool1Amount);
                  success:1,
                  status:200
-             });*/
+             });
         });
         //get employee id by cardno
      
@@ -227,7 +228,7 @@ module.exports ={
           const dte = body.date;
           const usertype1 = body.type;
          // console.log(dte);
-          if(refid!="")
+          if(refid!="0")
           {
             refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
                 if(err)
@@ -250,10 +251,11 @@ module.exports ={
          // console.log(usertype);
          var uremark = ""
          var eremark = "ESC"
+
           if(usertype1=="user")
           {
              uremark = "User account activation fee";
-             insertCompanyWallet(body.userid,usertype,companyShare,uremark,(err,results)=>{
+             insertCompanyWallet(uid,usertype,companyShare,uremark,(err,results)=>{
                 if(err)
                 {
                     console.log(err);
@@ -271,7 +273,7 @@ module.exports ={
                      status:200
                  });*/
             });
-            insertEmployeeWallet(body.userid,body.empcode,empShare,uremark,(err,results)=>{
+            insertEmployeeWallet(uid,body.empcode,empShare,uremark,(err,results)=>{
                 if(err)
                 {
                     console.log(err);
