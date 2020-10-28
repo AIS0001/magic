@@ -346,7 +346,7 @@ module.exports ={
                    
                 });
             }
-           
+           console.log(tokenresult[0]);
             getUserByid( tokenresult[0] ,(err,results)=>{
                 if(err)
                 {

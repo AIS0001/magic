@@ -8,7 +8,7 @@ module.exports = {
             `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode,type)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
         [
-            userid,
+            userid, 
             pwd,
             data.cname,
             data.contact,
@@ -233,6 +233,7 @@ module.exports = {
     },
 
     getUserByid:(data,callback)=>{
+       // console.log(data.userid);
         pool.query(`select * from user_registration where userid=?`,
         [data.userid],
         (error,results,fields)=>{
