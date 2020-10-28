@@ -133,47 +133,28 @@ module.exports ={
         var password = "welcome@123" ;
         password=hashSync(password,salt);
           //get total cashBack user list
-          getUsersByEmpID(empid,(err,results)=>{
+          getUsersByEmpID(empid,(err,useremp)=>{
             if(err)
             {
                 console.log(err);
                 return;
             }
-            if(!results)
+            if(!useremp)
             {
                 return res.status(404).json({
                     success:0,
                     message:"Unable to get Total user record by empid"
                 });
             }
-           return res.status(200).json({
+           /*return res.status(200).json({
                // console.log(pool1Amount);
                 success:1,
-                data:results
+                data:useremp
                 
-            });
+            });*/
         });
 
-        create(body,password,uid,(err,results)=>{
-            if(err)
-            {
-                console.log(err);
-             //    console.log(body);
-                return res.status(500).json({
-                    status:500,
-                    success:0,
-                    message:"500 Internal Server Error"
-                });
-            }
-            //console.log(body);
-            return res.status(200).json({
-                // console.log(pool1Amount);
-                 success:1,
-                 status:200
-             });
-        });
-        //get employee id by cardno
-     
+       
      getTotalUserByempId(empid,(err,tusers)=>{
             if(err)
             {
@@ -325,8 +306,27 @@ module.exports ={
           else{
                uremark = "";
           }
-          res.end();
-   
+         // res.end();
+         create(body,password,uid,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+             //    console.log(body);
+                return res.status(500).json({
+                    status:500,
+                    success:0,
+                    message:"500 Internal Server Error create"
+                });
+            }
+            //console.log(body);
+           return res.status(200).json({
+                // console.log(pool1Amount);
+                 success:1,
+                 status:200
+             });
+        });
+        //get employee id by cardno
+     
     },
     //on referesh get user token details
     userToken:(req,res)=>{
