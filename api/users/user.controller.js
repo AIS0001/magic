@@ -78,7 +78,11 @@ module.exports ={
             if(err)
             {
                 console.log(err);
-                return;
+                return res.status(404).json({
+                    status:503,
+                    success:0,
+                    message:err
+                });
             }
             if(!total_income)
             {
