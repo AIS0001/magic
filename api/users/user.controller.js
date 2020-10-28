@@ -166,11 +166,11 @@ module.exports ={
                 });
             }
             //console.log(body);
-           /* return res.status(200).json({
+            return res.status(200).json({
                 // console.log(pool1Amount);
                  success:1,
                  status:200
-             });*/
+             });
         });
         //get employee id by cardno
      
@@ -325,6 +325,7 @@ module.exports ={
           else{
                uremark = "";
           }
+          res.end();
    
     },
     //on referesh get user token details
