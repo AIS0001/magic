@@ -2,7 +2,7 @@ const { createUser,maxlevel,directDownlineMembers,addCategory,cashBackIncome,use
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 
-router.post("/create",checkToken,createUser);
+router.post("/create",createUser);
 router.post("/referralincome",checkToken,referralIncome);
 router.post("/totalref",checkToken,totalRefIncome);
 //router.post("/usertoken",userToken);
