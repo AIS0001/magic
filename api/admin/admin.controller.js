@@ -73,7 +73,11 @@ module.exports ={
             if(err)
             {
                 console.log(err);
-                return;
+                return res.json({
+                    status:403,
+                    success:0,
+                    message:err
+                });
             }
             if(!results)
             {

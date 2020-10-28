@@ -4,7 +4,7 @@ module.exports = {
     checkToken:(req,res,next)=>{
         const body = req.body;
         const token =  body.auth_token;
-
+        console.log(body);
     if(!token) return res.status(401).send('Access Denied');
 
     try{

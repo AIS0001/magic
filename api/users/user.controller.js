@@ -60,6 +60,7 @@ module.exports ={
             if(!income)
             {
                 return res.status(404).json({
+                    status:404,
                     success:0,
                     message:"Record not found"
                 });
