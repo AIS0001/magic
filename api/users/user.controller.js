@@ -128,7 +128,7 @@ module.exports ={
         const salt = genSaltSync(10);
         const empid = body.empcode;
         var uid = Math.floor(Math.random() * 100000) ;
-        //console.log(body.password);
+        //console.log(uid);
         //body.password=hashSync(body.password,salt);
         var password = "welcome@123" ;
         password=hashSync(password,salt);
@@ -166,11 +166,11 @@ module.exports ={
                 });
             }
             //console.log(body);
-            return res.status(200).json({
+           /* return res.status(200).json({
                 // console.log(pool1Amount);
                  success:1,
                  status:200
-             });
+             });*/
         });
         //get employee id by cardno
      
@@ -227,7 +227,7 @@ module.exports ={
          // console.log(uid);
           const dte = body.date;
           const usertype1 = body.type;
-         // console.log(dte);
+       //  console.log(usertype1);
           if(refid!="0")
           {
             refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
