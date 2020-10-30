@@ -1,12 +1,14 @@
-const { createUser,getUsers,getUserByid,updateUser,deleteUser ,login} = require("./emp.controller");
+const { createUser,
+    getUsers,
+    UserByEmpid,
+    login} = require("./emp.controller");
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 
-router.post("/create",createUser);
-router.get("/",checkToken,getUsers);
-router.get("/:id",checkToken,getUserByid);
-router.patch("/",checkToken,updateUser);
-router.delete("/",checkToken,deleteUser);
+router.post("/create",checkToken,createUser);
+router.get("/",checkToken,checkToken,getUsers);
+//router.post("/viewallusers",checkToken,UserByid);
+router.post("/viewusers",UserByEmpid);
 router.post("/login",login);
 
 

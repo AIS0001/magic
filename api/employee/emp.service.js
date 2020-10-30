@@ -43,9 +43,21 @@ module.exports = {
         );
     },
 
-    getUserByid:(id,callback)=>{
-        pool.query(`select * from emp_registration where userid=?`,
-        [id],
+    getUserByid:(data,callback)=>{
+        pool.query(`select * from users where userid=?`,
+        [data.id],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    getUserByEmpid:(data,callback)=>{
+        pool.query(`select * from user_registration where empcode=?`,
+        [data.id],
         (error,results,fields)=>{
             if(error)
             {
