@@ -1,4 +1,4 @@
-const { create,getUsers,getUserByid,getUserByEmpid,updateUser,deleteUser, getUserByuserEmail } = require("./emp.service");
+const { create,getUsers,getUserByid,getUserByEmpid,getVendorByEmpid,updateUser,deleteUser, getUserByuserEmail } = require("./emp.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
@@ -73,6 +73,35 @@ module.exports ={
             });
         });
     },
+    VendorByEmpid:(req,res)=>{
+        const body = req.body;
+        getVendorByEmpid(body,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+                return res.json({
+                    status:503,
+                    success:0,
+                    message:err
+                });
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
+
+
     getUsers:(req,res)=>{
         getUsers((err,results)=>{
             if(err)

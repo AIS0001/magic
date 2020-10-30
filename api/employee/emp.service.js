@@ -56,7 +56,19 @@ module.exports = {
         );
     },
     getUserByEmpid:(data,callback)=>{
-        pool.query(`select * from user_registration where empcode=?`,
+        pool.query(`select * from user_registration where empcode=? AND type= 'user'`,
+        [data.id],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    getVendorByEmpid:(data,callback)=>{
+        pool.query(`select * from user_registration where empcode=? AND type= 'vendors'`,
         [data.id],
         (error,results,fields)=>{
             if(error)
