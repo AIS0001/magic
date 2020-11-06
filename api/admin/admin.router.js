@@ -35,7 +35,7 @@ router.post("/getusers",checkToken,getUsers);
 router.post("/getvendors",checkToken,getVendors);
 router.post("/getemployees",checkToken,getEmployees);
 
-router.post("/createcategory",upload,insertCategory);
+router.post("/createcategory",checkToken,upload,insertCategory);
 router.post("/viewcategory",checkToken,viewCategories);
 
 //router.get("/updateemployee",checkToken,);

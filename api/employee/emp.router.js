@@ -40,8 +40,8 @@ const upload = multer({
 router.post("/create",checkToken,createUser);
 router.get("/",checkToken,checkToken,getUsers);
 
-router.post("/createproduct",upload,createProducts);
-router.post("/viewproductsbyvendor",upload,viewProductsByVendor);
+router.post("/createproduct",checkToken,upload,createProducts);
+router.post("/viewproductsbyvendor",checkToken,viewProductsByVendor);
 
 //router.post("/viewallusers",checkToken,UserByid);
 router.post("/viewusers",UserByEmpid);
