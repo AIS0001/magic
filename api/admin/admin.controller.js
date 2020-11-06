@@ -1,4 +1,4 @@
-const { create,getUsers,getUserByid,getVendorsmodel,getEmployee,updateUser,deleteUser, getUserByuserEmail } = require("./admin.service");
+const { create,getUsers,getUserByid,createCategory,getVendorsmodel,getEmployee,updateUser,deleteUser, getUserByuserEmail } = require("./admin.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
@@ -25,6 +25,30 @@ module.exports ={
 
         });
     },
+
+    insertCategory:(req,res)=>{
+
+        const body =req.body;
+        const salt = genSaltSync(10);
+        body.password=hashSync(body.password,salt);
+        createCategory(body,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+                return res.status(500).json({
+                    success:0,
+                    message:"Database connection error ahoooo"
+                });
+            }
+            return res.status(200).json({
+                success:1,
+                data:results
+
+            });
+
+        });
+    },
+
     getUserByid:(req,res)=>{
         const id = req.param.id;
         getUserByid(id,(err,results)=>{

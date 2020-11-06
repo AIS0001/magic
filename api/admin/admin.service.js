@@ -27,6 +27,24 @@ module.exports = {
 
         );
     },
+    createCategory:(data,callback)=>{
+        pool.query(
+            `INSERT INTO category (userid, cat_name, flag)
+             VALUES (?, ?, '1')`,
+        [
+            data.userid,
+            data.cat_name,
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+
+        );
+    },
 
     getUsers:callback=>{
         pool.query(`select * from user_registration where type="user"`,

@@ -1,4 +1,22 @@
-const { create,getUsersByToken,directdownline,insertCategory,getcashbackIncomeByUserId,insertEmployeeWallet,getMaxLevel,getTotalUserByempId,insertCompanyWallet,getTotalRefIncome,refIncome,getRefIncomeByUserId,getUsersByEmpID,insertToken,getUsers,getUserByid,updateUser,deleteUser, getUserByuserEmail } = require("./user.service");
+const { create,
+    getUsersByToken,
+    directdownline,
+    InsertcashBackIncome,
+    insertCategory,
+    getcashbackIncomeByUserId,
+    insertEmployeeWallet,
+    getMaxLevel,
+    getTotalUserByempId,
+    insertCompanyWallet,
+    getTotalRefIncome,
+    refIncome,
+    getRefIncomeByUserId,
+    getUsersByEmpID,
+    insertToken,getUsers,
+    getUserByid,
+    updateUser,
+    deleteUser, 
+    getUserByuserEmail } = require("./user.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 //const { CreateToken } = require("./token.middleware");
@@ -154,7 +172,16 @@ module.exports ={
             });*/
         });
 
-       
+        var cardAmount = 500;
+        var companyShare = cardAmount*0.40;
+        var empShare = cardAmount*0.20;
+        var poll1UserAmount = 0;
+        var poll2UserAmount = 0;
+        var poll3UserAmount = 0;
+        var poll4UserAmount = 0;
+        var poolwiseUsers=0;
+
+
      getTotalUserByempId(empid,(err,tusers)=>{
             if(err)
             {
@@ -165,10 +192,30 @@ module.exports ={
             {
                 return res.json({
                     success:0,
+                  
                     message:"Unable to get Total user record by empid"
                 });
             }
-           /*return res.json({
+         //  console.log(tusers[0].total_users);
+           
+            const remainAmount = cardAmount-(companyShare+empShare);
+           
+            const pool1Amount = remainAmount*0.40;
+            const pool2Amount = remainAmount*0.30;
+            const pool3Amount = remainAmount*0.20;
+            const pool4Amount = remainAmount*0.10;
+             poolwiseUsers =Math.round((tusers[0].total_users+ Number.EPSILON)*0.25);
+             poll1UserAmount = pool1Amount/poolwiseUsers;
+             poll2UserAmount = pool2Amount/poolwiseUsers;
+             poll3UserAmount = pool3Amount/poolwiseUsers;
+             poll4UserAmount = pool4Amount/poolwiseUsers;
+
+         /*    console.log(poolwiseUsers);
+            console.log(poll1UserAmount);
+            console.log(poll2UserAmount);
+            console.log(poll3UserAmount);
+            console.log(poll4UserAmount);*/
+         /*  return res.json({
                // console.log(pool1Amount);
                 success:1,
                 //data:results,
@@ -176,21 +223,8 @@ module.exports ={
             });*/
         });
       //////////////////////
-       const cardAmount = 500;
-       const companyShare = cardAmount*0.40;
-       const empShare = cardAmount*0.20;
-       const remainAmount = cardAmount-(companyShare+empShare);
-      
-       const pool1Amount = remainAmount*0.40;
-       const pool2Amount = remainAmount*0.30;
-       const pool3Amount = remainAmount*0.20;
-       const pool4Amount = remainAmount*0.10;
-       const poolwiseUsers =Math.round(15*0.25);
-       const poll1UserAmount = pool1Amount/poolwiseUsers;
-       const poll2UserAmount = pool2Amount/poolwiseUsers;
-       const poll3UserAmount = pool3Amount/poolwiseUsers;
-       const poll4UserAmount = pool4Amount/poolwiseUsers;
-       //console.log(pool1Amount);
+   
+       
       
                //pool amount distribution
            ///////////////////
@@ -273,9 +307,30 @@ module.exports ={
                  });*/
             });
            //Cash Back Income
-           /* while(poolwiseUsers>=1)
+           //  console.log(poll1UserAmount);
+           var loop = 4;
+           for (i = 0; i < 4; i++) {
+            
+            InsertcashBackIncome(uid,poll1UserAmount,dte,poolwiseUsers,poolwiseUsers,(err,results)=>{
+                console.log(poll1UserAmount);
+                 if(err)
+                {
+                    console.log(err);
+                    return;
+                }
+                if(!poolDataresults)
+                {
+                    return res.json({
+                        success:0,
+                        message:"Something in pool /cashback data calculation"
+                    });
+                }
+            });
+         
+          }
+          while(poolwiseUsers>=1)
             {
-                cashBackIncome(body.userid,companyShare,dte,poolwiseUsers,poolwiseUsers,(err,results)=>{
+                cashBackIncome(body.userid,poll1UserAmount,dte,poolwiseUsers,poolwiseUsers,(err,results)=>{
                     if(err)
                     {
                         console.log(err);
@@ -289,8 +344,9 @@ module.exports ={
                         });
                     }
                 });
+                console.log(poll1UserAmount);
                 poolwiseUsers--;
-            }*/
+            }
             //Cash abck income end
             
           }
@@ -321,8 +377,10 @@ module.exports ={
             //console.log(body);
            return res.status(200).json({
                 // console.log(pool1Amount);
+                
                  success:1,
-                 status:200
+                 status:200,
+                 message:"User created Successfully"
              });
         });
         //get employee id by cardno
@@ -350,7 +408,7 @@ module.exports ={
                    
                 });
             }
-           //console.log(tokenresult[0]);
+          // console.log(tokenresult[0]);
             getUserByid( tokenresult[0] ,(err,results)=>{
                 if(err)
                 {

@@ -13,11 +13,13 @@ module.exports ={
             {
                 console.log(err);
                 return res.status(500).json({
+                    status:401,
                     success:0,
                     message:"Database connection error ahoooo"
                 });
             }
             return res.status(200).json({
+                status:200,
                 success:1,
                 data:results
 

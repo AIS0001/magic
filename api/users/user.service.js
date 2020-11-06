@@ -115,20 +115,17 @@ module.exports = {
         }
         );
     },
-    cashBackIncome:(uid,amount,dte,lmt,ofset ,callback)=>{
+    InsertcashBackIncome:(uid,amount,dte,lmt,ofset ,callback)=>{
         //check user type
-       if(usertype=="user")
-        {
-            pool.query( `INSERT INTO cashback (userid, amount, date) VALUES ( ?, ?, ?) limit ? OFFSET ? `,
+       pool.query( `INSERT INTO cashback (userid, amount, date) VALUES ( ?, ?, ?) `,
            [
                uid,
                amount,
                dte,
-               lmt,
                ofset
+               
            ]
                 );
-        }
         
     },
 
