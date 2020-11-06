@@ -1,4 +1,4 @@
-const { create,getUsers,getUserByid,getUserByEmpid,getVendorByEmpid,updateUser,deleteUser, getUserByuserEmail } = require("./emp.service");
+const { create,getUsers,viewProductsByVendorid,createProduct,getUserByid,getUserByEmpid,getVendorByEmpid,updateUser,deleteUser, getUserByuserEmail } = require("./emp.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
@@ -27,6 +27,72 @@ module.exports ={
 
         });
     },
+    createProducts:(req,res)=>{
+
+        const body =req.body;
+        let gallary = '';
+        req.files['gallary'].forEach(el => {
+         gallary += el.filename + ',';
+        });
+        gallary = gallary.substring(0, gallary.length - 1);
+
+        createProduct({
+            userid: req.body.userid,
+            vendorid: req.body.vendorid, 
+            cat_name: req.body.cat_name, 
+            prod_id: req.body.prod_id, 
+            prod_name: req.body.prod_name, 
+            price: req.body.price, 
+            desc: req.body.desc, 
+            gallary: gallary
+        },(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+                return res.status(500).json({
+                    status:401,
+                    success:0,
+                    message:err
+                });
+            }
+            return res.status(200).json({
+                status:200,
+                success:1,
+                data:results
+
+            });
+
+        });
+    },
+
+    viewProductsByVendor:(req,res)=>{
+        const body = req.body;
+        viewProductsByVendorid(body,(err,results)=>{
+            if(err)
+            {
+                return res.json({
+                    status:500,
+                    success:0,
+                    message:err
+                });
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
+
+
     UserByid:(req,res)=>{
         const body = req.body;
         getUserByid(body,(err,results)=>{

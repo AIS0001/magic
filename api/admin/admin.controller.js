@@ -14,7 +14,7 @@ module.exports ={
                 console.log(err);
                 return res.status(500).json({
                     success:0,
-                    message:"Database connection error ahoooo"
+                    message:err
                 });
             }
             return res.status(200).json({
@@ -27,20 +27,33 @@ module.exports ={
     },
 
     insertCategory:(req,res)=>{
+        let gallary = '';
+        req.files['gallary'].forEach(el => {
+         gallary += el.filename + ',';
+        });
+        gallary = gallary.substring(0, gallary.length - 1);
 
         const body =req.body;
-        const salt = genSaltSync(10);
-        body.password=hashSync(body.password,salt);
-        createCategory(body,(err,results)=>{
+        
+        createCategory({  
+            userid: req.body.userid,
+            cat_name: req.body.cat_name, 
+            gallary: gallary
+            
+        },(err,results)=>{
+          
+
+
             if(err)
             {
                 console.log(err);
                 return res.status(500).json({
                     success:0,
-                    message:"Database connection error ahoooo"
+                    message:err
                 });
             }
             return res.status(200).json({
+                status:200,
                 success:1,
                 data:results
 
@@ -65,6 +78,31 @@ module.exports ={
                 });
             }
             return res.json({
+                success:1,
+                data:results 
+            });
+        });
+    },
+    viewCategories:(req,res)=>{
+        viewCategory((err,results)=>{
+            if(err)
+            {
+                return res.json({
+                    status:500,
+                    success:0,
+                    message:err
+                });
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
                 success:1,
                 data:results 
             });

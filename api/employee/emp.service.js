@@ -28,6 +28,42 @@ module.exports = {
         );
     },
 
+    createProduct:(data,callback)=>{
+        pool.query(
+            `INSERT INTO products ( userid, vendorid, cat_name, prod_id, prod_name, price, description, gallary, flag) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, '1');`,
+        [
+            data.userid,
+            data.vendorid,
+            data.cat_name,
+            data.prod_id,
+            data.prod_name,
+            data.price,
+            data.desc,
+            data.gallary
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+
+        );
+    },
+    viewProductsByVendorid:(data,callback)=>{
+        pool.query(`select * from products where vendorid=?`,
+        [data.vendorid],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
     getUsers:callback=>{
         pool.query(`select * from emp_registration`,
         [

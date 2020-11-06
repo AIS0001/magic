@@ -29,11 +29,12 @@ module.exports = {
     },
     createCategory:(data,callback)=>{
         pool.query(
-            `INSERT INTO category (userid, cat_name, flag)
-             VALUES (?, ?, '1')`,
+            `INSERT INTO category (userid, cat_name,img, flag)
+             VALUES (?, ?, ?, '1')`,
         [
             data.userid,
             data.cat_name,
+            data.gallary
         ],
         (error,results,fields)=>{
             if(error)
@@ -48,6 +49,18 @@ module.exports = {
 
     getUsers:callback=>{
         pool.query(`select * from user_registration where type="user"`,
+        [ ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    viewCategory:callback=>{
+        pool.query(`select * from category `,
         [ ],
         (error,results,fields)=>{
             if(error)
