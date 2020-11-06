@@ -91,6 +91,19 @@ module.exports = {
         }
         );
     },
+    getUserByid:(data,callback)=>{
+        pool.query(`select * from users where userid=?`,
+        [data.id],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+
     getUserByEmpid:(data,callback)=>{
         pool.query(`select * from user_registration where empcode=? AND type= 'user'`,
         [data.id],

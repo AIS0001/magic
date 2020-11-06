@@ -35,10 +35,18 @@ router.post("/getusers",checkToken,getUsers);
 router.post("/getvendors",checkToken,getVendors);
 router.post("/getemployees",checkToken,getEmployees);
 
-router.post("/createcategory",checkToken,upload,insertCategory);
-router.post("/viewcategory",checkToken,viewCategories);
+router.post("/createcategory",upload,insertCategory);
+router.get("/viewcategory",viewCategories); //what you are wiating vinod?i am eating 
+//you need end point to get image .... do it i will learn .. also pay you buddy okayy vinod
+router.get('/image/:imageName', (req,res)=> {
+   //open the chrome 
+   res.sendFile(path.join(__dirname, `../../uploads/${req.params.imageName}`));//ypu understand what happened?
+   
+   // error in path let me iwanna to print the path off __dirnmae
+   console.log(__dirname);//wait
+;})
 
-//router.get("/updateemployee",checkToken,);
+//router.get("/updateemployee",checkToken,);? what? //view category must be a get request!ohh
 router.get("/deleteemployee",checkToken,getUsers);
 
 
