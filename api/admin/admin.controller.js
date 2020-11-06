@@ -1,4 +1,4 @@
-const { create,getUsers,getUserByid,createCategory,getVendorsmodel,getEmployee,updateUser,deleteUser, getUserByuserEmail } = require("./admin.service");
+const { create,getUsers,getUserByid,viewCategory,createCategory,getVendorsmodel,getEmployee,updateUser,deleteUser, getUserByuserEmail } = require("./admin.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
