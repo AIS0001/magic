@@ -36,7 +36,7 @@ router.post("/getvendors",checkToken,getVendors);
 router.post("/getemployees",checkToken,getEmployees);
 
 router.post("/createcategory",checkToken,upload,insertCategory);
-router.post("/viewcategory",viewCategories); //what you are wiating vinod?i am eating 
+router.post("/viewcategory",checkToken,viewCategories); //what you are wiating vinod?i am eating 
 //you need end point to get image .... do it i will learn .. also pay you buddy okayy vinod
 router.get('/image/:imageName', (req,res)=> {
    //open the chrome 
