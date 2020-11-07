@@ -38,10 +38,15 @@ const upload = multer({
 
 
 router.post("/create",checkToken,createUser);
-router.get("/",checkToken,checkToken,getUsers);
+router.get("/",checkToken,getUsers);
 
 router.post("/createproduct",checkToken,upload,createProducts);
 router.post("/viewproductsbyvendor",checkToken,viewProductsByVendor);
+router.get('/image/:imageName', (req,res)=> {
+   //open the chrome 
+   res.sendFile(path.join(__dirname, `../../uploads/${req.params.imageName}`));//ypu understand what happened?
+  
+;})
 
 //router.post("/viewallusers",checkToken,UserByid);
 router.post("/viewusers",UserByEmpid);
