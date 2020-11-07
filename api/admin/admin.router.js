@@ -35,15 +35,18 @@ router.post("/getusers",checkToken,getUsers);
 router.post("/getvendors",checkToken,getVendors);
 router.post("/getemployees",checkToken,getEmployees);
 
-router.post("/createcategory",upload,insertCategory);
-router.get("/viewcategory",viewCategories); //what you are wiating vinod?i am eating 
+router.post("/createcategory",checkToken,upload,insertCategory);
+router.get("/viewcategory",checkToken,viewCategories); //what you are wiating vinod?i am eating 
 //you need end point to get image .... do it i will learn .. also pay you buddy okayy vinod
 router.get('/image/:imageName', (req,res)=> {
    //open the chrome 
    res.sendFile(path.join(__dirname, `../../uploads/${req.params.imageName}`));//ypu understand what happened?
-   
+   //now ok?? yes ok! close now! if all rightS wait one more thing form validation...i want to validate form field for required field
+   // you neeeeeed to use express-validator package!
+   // go to freelance to speaaak more icant contrright!not understand what you said
+
    // error in path let me iwanna to print the path off __dirnmae
-   console.log(__dirname);//wait
+   //console.log(__dirname);//wait
 ;})
 
 //router.get("/updateemployee",checkToken,);? what? //view category must be a get request!ohh
