@@ -7,6 +7,7 @@ const { createUser,
     login} = require("./emp.controller");
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
+const { headercheckToken } = require("../../auth/header_token_validation");
 
 const path = require("path");
 const multer = require("multer");
@@ -38,7 +39,7 @@ const upload = multer({
 router.post("/create",checkToken,createUser);
 router.get("/",checkToken,getUsers);
 
-router.post("/createproduct",upload,createProducts);
+router.post("/createproduct",headercheckToken,upload,createProducts);
 router.post("/viewproductsbyvendor",checkToken,viewProductsByVendor);
 router.get('/image/:imageName', (req,res)=> {
    //open the chrome 
