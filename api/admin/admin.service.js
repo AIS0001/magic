@@ -143,14 +143,14 @@ module.exports = {
     },
     getUserByuserEmail:(email,callack)=>{
         pool.query(
-            `select * from registration where email = ?`,
+            `select * from user_registration where email = ?`,
             [email],
             (error,results,fields)=>{
                 if(error)
                 {
                     callack(error);
                 }
-                return callack(null,results[0]);
+                return callack(null,results);
             }
         );
     }
