@@ -38,7 +38,7 @@ const upload = multer({
 router.post("/create",checkToken,createUser);
 router.get("/",checkToken,getUsers);
 
-router.post("/createproduct",checkToken,upload,createProducts);
+router.post("/createproduct",upload,createProducts);
 router.post("/viewproductsbyvendor",checkToken,viewProductsByVendor);
 router.get('/image/:imageName', (req,res)=> {
    //open the chrome 
