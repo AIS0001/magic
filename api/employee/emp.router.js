@@ -13,8 +13,6 @@ const multer = require("multer");
 // error from multeeer packege so i uninstall and re install ok?okcc
 
 var maxSize = 1000000*90 ;
-
-
 const storage = multer.diskStorage({
    destination: "./uploads/",//the error can find this path so we need to get this path
    filename: function(req, file, cb){
@@ -46,7 +44,7 @@ router.get('/image/:imageName', (req,res)=> {
    //open the chrome 
    res.sendFile(path.join(__dirname, `../../uploads/${req.params.imageName}`));//ypu understand what happened?
   
-;})
+;});
 
 //router.post("/viewallusers",checkToken,UserByid);
 router.post("/viewusers",UserByEmpid);

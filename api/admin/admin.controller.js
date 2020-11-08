@@ -41,8 +41,6 @@ module.exports ={
             gallary: gallary
             
         },(err,results)=>{
-          
-
 
             if(err)
             {
@@ -82,7 +80,8 @@ module.exports ={
                 data:results 
             });
         });
-    },
+    },//where?!
+    //this one used for getting image and other data
     viewCategories:(req,res)=>{
         viewCategory((err,results)=>{
             if(err)
