@@ -43,7 +43,7 @@ router.post("/getemployees",checkToken,getEmployees);
 
 
 
-router.post("/createcategory",headercheckToken,upload,insertCategory);
+router.post("/createcategory",upload,insertCategory);
 router.post("/viewcategory",viewCategories); //what you are wiating vinod?i am eating 
 //you need end point to get image .... do it i will learn .. also pay you buddy okayy vinod
 router.get('/image/:imageName', (req,res)=> {
