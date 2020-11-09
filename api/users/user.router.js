@@ -1,4 +1,4 @@
-const { createUser,maxlevel,directDownlineMembers,addCategory,cashBackIncome,userToken,referralIncome,totalRefIncome,getUsers,getUserByid,updateUser,deleteUser ,login} = require("./user.controller");
+const { createUser,maxlevel,getVendorBycategory,directDownlineMembers,addCategory,cashBackIncome,userToken,referralIncome,totalRefIncome,getUsers,getUserByid,updateUser,deleteUser ,login} = require("./user.controller");
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
 
@@ -9,6 +9,8 @@ router.post("/totalref",checkToken,totalRefIncome);
 router.post("/directdownline",checkToken , directDownlineMembers);
 router.post("/cashbackincome",checkToken,cashBackIncome);
 router.post("/newcategory",checkToken,addCategory);
+
+router.post("/getvendorbycategory",checkToken,getVendorBycategory);
 
 router.get("/maxlevel",checkToken,maxlevel);
 router.get("/",checkToken,getUsers);

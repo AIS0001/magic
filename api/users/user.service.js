@@ -177,6 +177,18 @@ module.exports = {
             return callback(null,results);
         } );
     },
+    getVendorByCategory:(data,callback)=>{
+        pool.query(`SELECT * FROM products where cat_name=? group by vendorid `,
+        [ data.category ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+
 
         //get referral income by user id
     getRefIncomeByUserId:(data,callback)=>{

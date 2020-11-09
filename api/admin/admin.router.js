@@ -1,6 +1,12 @@
-const { createUser,insertCategory,getUsers,viewCategories,getUserByid,getVendors,getEmployees,updateUser,deleteUser ,login} = require("./admin.controller");
+const { createUser,insertCategory,
+   
+   getUsers,viewCategories,getUserByid,getVendors,
+   getEmployees,updateUser,deleteUser ,
+   login
+} = require("./admin.controller");
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
+const { headercheckToken } = require("../../auth/header_token_validation");
 
 const path = require("path");
 const multer = require("multer");
@@ -35,11 +41,15 @@ router.post("/getusers",checkToken,getUsers);
 router.post("/getvendors",checkToken,getVendors);
 router.post("/getemployees",checkToken,getEmployees);
 
-router.post("/createcategory",upload,insertCategory);
+
+
+router.post("/createcategory",headercheckToken,upload,insertCategory);
 router.post("/viewcategory",viewCategories); //what you are wiating vinod?i am eating 
 //you need end point to get image .... do it i will learn .. also pay you buddy okayy vinod
 router.get('/image/:imageName', (req,res)=> {
    //open the chrome 
+   const imgname = req.params.imageName;
+  
    res.sendFile(path.join(__dirname, `../../uploads/${req.params.imageName}`));//ypu understand what happened?
   
 ;})
