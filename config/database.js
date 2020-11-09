@@ -18,6 +18,7 @@ const pool = createPool({
     user:"aisgr1bu_user1",
     password:"Realforce__123",
     database:"aisgr1bu_magic_nasty",
+   // database:"aisgr1bu_magic_nasty_test",
     connectionLimit:10
 });
 

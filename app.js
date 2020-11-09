@@ -7,6 +7,9 @@ const port = process.env.PORT || 3000;
 const userRouter = require("./api/users/user.router");
 const empRouter = require("./api/employee/emp.router");
 const adminRouter = require("./api/admin/admin.router");
+
+app.use(express.json({limit: '1000mb'}));
+app.use(express.urlencoded({extended: false, limit: '1000mb'}));
 app.use(express.json());
 app.use("/api/users",userRouter);
 app.use("/api/employee",empRouter);
