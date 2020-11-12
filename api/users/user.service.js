@@ -98,6 +98,45 @@ module.exports = {
         }
         );
     },
+    insertCartItems:(data,callback)=>{
+        pool.query(
+            `INSERT INTO cart (userid, vendorid, item_name, item_code, cat_name, cat_id, qty, price, amount, created_date, flag)
+             VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '1');`,
+        [
+            data.userid,
+            data.vendorid,
+            data.item_name,
+            data.item_code,
+            data.cat_name,
+            data.cat_id,
+            data.qty,
+            data.price,
+            data.amount,
+            data.created_date
+
+        ],
+    
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    getcartItemsbyUserid:(data,callback)=>{
+        pool.query(`SELECT * FROM cart where userid=? AND flag='1' `,
+        [ data.userid ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+
     insertToken:(userid,data,callback)=>{
         pool.query(
             `INSERT INTO active_token (userid, token) VALUES (?, ?);`,

@@ -15,6 +15,8 @@ const { create,
     insertToken,getUsers,
     getUserByid,
     updateUser,
+    getcartItemsbyUserid,
+    insertCartItems,
     getVendorByCategory,
     deleteUser, 
     getUserByuserEmail } = require("./user.service");
@@ -140,7 +142,29 @@ module.exports ={
         });
         
     },
-
+    insertCart:(req,res)=>{
+        const body = req.body;
+        insertCartItems(body,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+             //    console.log(body);
+                return res.status(500).json({
+                    status:500,
+                    success:0,
+                    message:"500 Internal Server Error"
+                });
+            }
+            //console.log(body);
+         return res.status(200).json({
+                // console.log(pool1Amount);
+                status:200,
+                 success:1,
+                 status:200
+             });
+        });
+        
+    },
     createUser:(req,res)=>{
 
         const body =req.body;
@@ -467,7 +491,29 @@ module.exports ={
             });
         });
     },
-
+    getCartItems:(req,res)=>{
+        const body = req.body;
+        getcartItemsbyUserid(body,(err,results)=>{
+            if(err)
+            {
+                console.log(err);
+                return;
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
     getUserByid:(req,res)=>{
         const body = req.body;
         getUserByid(body,(err,results)=>{
