@@ -217,9 +217,9 @@ module.exports = {
         } );
     },
     getVendorByCategory:(data,callback)=>{
-        pool.query(`SELECT user_registration.cname, user_registration.userid FROM user_registration 
-        INNER JOIN products ON user_registration.userid=products.vendorid 
-        WHERE user_registration.type = 'vendors'AND products.cat_name LIKE ? `,
+        pool.query(`SELECT user_registration.cname, user_registration.userid, user_registration.city,
+         user_registration.address, user_registration.pincode FROM user_registration INNER JOIN products ON user_registration.userid=products.vendorid 
+        WHERE user_registration.type = 'vendors'AND products.cat_name LIKE ?`,
         [ data.category ],
         (error,results,fields)=>{
             if(error)
