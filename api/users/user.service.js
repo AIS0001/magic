@@ -217,7 +217,9 @@ module.exports = {
         } );
     },
     getVendorByCategory:(data,callback)=>{
-        pool.query(`SELECT * FROM products where cat_name=? group by vendorid `,
+        pool.query(`SELECT user_registration.cname, user_registration.userid FROM user_registration 
+        INNER JOIN products ON user_registration.userid=products.vendorid 
+        WHERE user_registration.type = 'vendors'AND products.cat_name LIKE ? `,
         [ data.category ],
         (error,results,fields)=>{
             if(error)
