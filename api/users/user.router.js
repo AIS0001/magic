@@ -10,7 +10,7 @@ router.post("/directdownline",checkToken , directDownlineMembers);
 router.post("/cashbackincome",checkToken,cashBackIncome);
 router.post("/newcategory",checkToken,addCategory);
 
-router.post("/getvendorbycategory",checkToken,getVendorBycategory);
+router.post("/getvendorbycategory",getVendorBycategory);
 router.post("/getcartitems",checkToken,getCartItems);
 router.post("/addtocart",checkToken,insertCart);
 

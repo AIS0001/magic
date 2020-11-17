@@ -168,14 +168,14 @@ module.exports = {
         
     },
 
-    refIncome:(poolData,usertype,uid,dte,callback)=>{
+    refIncome:(refamount,usertype,uid,dte,callback)=>{
         //check user type
        if(usertype=="user")
         {
             pool.query( `INSERT INTO ref_income (userid, amount, date) VALUES ( ?, ?, ?);`,
            [
                uid,
-               poolData,
+               refamount,
                dte
            ]
                 );

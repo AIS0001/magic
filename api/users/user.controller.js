@@ -224,7 +224,6 @@ module.exports ={
          //  console.log(tusers[0].total_users);
            
             const remainAmount = cardAmount-(companyShare+empShare);
-           
             const pool1Amount = remainAmount*0.40;
             const pool2Amount = remainAmount*0.30;
             const pool3Amount = remainAmount*0.20;
@@ -235,8 +234,42 @@ module.exports ={
              poll3UserAmount = pool3Amount/poolwiseUsers;
              poll4UserAmount = pool4Amount/poolwiseUsers;
 
-         /*    console.log(poolwiseUsers);
-            console.log(poll1UserAmount);
+
+             const usertype = body.type;
+             // console.log(usertype);
+              const refid = body.refcode;
+             // console.log(uid);
+              const dte = body.date;
+    
+            
+              if(refid!="0")
+              {
+               // console.log(usertype1);
+               // console.log(poll1UserAmount);
+                refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
+                    if(err)
+                    {
+                        console.log(err);
+                        return;
+                    }
+                    if(!poolDataresults)
+                    {
+                        return res.json({
+                            success:0,
+                            message:"Something in pool /cashback data calculation"
+                        });
+                    }
+                  
+                    
+                });
+              
+              }
+              else
+              {
+                 // console.log("refid 0");
+              }
+            //console.log(poolwiseUsers);
+           /* console.log(poll1UserAmount);
             console.log(poll2UserAmount);
             console.log(poll3UserAmount);
             console.log(poll4UserAmount);*/
@@ -248,9 +281,6 @@ module.exports ={
             });*/
         });
       //////////////////////
-   
-       
-      
                //pool amount distribution
            ///////////////////
           
@@ -267,9 +297,11 @@ module.exports ={
          // console.log(uid);
           const dte = body.date;
           const usertype1 = body.type;
-       //  console.log(usertype1);
-          if(refid!="0")
+        
+         /* if(refid!="0")
           {
+           // console.log(usertype1);
+            console.log(poll1UserAmount);
             refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
                 if(err)
                 {
@@ -288,6 +320,10 @@ module.exports ={
             });
           
           }
+          else
+          {
+              console.log("refid 0");
+          }*/
          // console.log(usertype);
          var uremark = ""
          var eremark = "ESC"
