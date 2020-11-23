@@ -168,6 +168,20 @@ module.exports = {
         
     },
 
+    InsertProfile:(data,callback)=>{
+        //check user type
+       pool.query( `INSERT INTO cashback (userid, amount, date) VALUES ( ?, ?, ?) `,
+           [
+            data.userid,
+            data.vendorid,
+            data.item_name,
+            data.item_code,
+            data.cat_name,
+               
+           ]
+                );
+        
+    },
     refIncome:(refamount,usertype,uid,dte,callback)=>{
         //check user type
        if(usertype=="user")
@@ -294,6 +308,19 @@ module.exports = {
         }
         );
     },
+    getProductByid:(data,callback)=>{
+        // console.log(data.userid);
+         pool.query(`select * from products where prod_id=?`,
+         [data.pid],
+         (error,results,fields)=>{
+             if(error)
+             {
+               return  callback(error);
+             }
+             return callback(null,results);
+         }
+         );
+     },
     getTotalUserByempId:(empid,callback)=>{
         pool.query(`select count(*) as total_users from sub_id_registration where empid=? `,
         [empid],
@@ -332,16 +359,15 @@ module.exports = {
         );
     },
 
-    updateUser:(data,callback)=>{
-        pool.query(`update user_registration set fname=?,lname-?,gender=?,email=?,password=?,contact=? where id=?`,
+    updateUsers:(data,callback)=>{
+        pool.query(`update user_registration set cname=?,city=?,address=?,pincode=?,contact=? where userid=?`,
         [
-            data.fname,
-            data.lname,
-            data.gender,
-            data.email,
-            data.password,
+            data.cname,
+            data.city,
+            data.address,
+            data.pincode,
             data.contact,
-            data.id
+            data.userid
         ],
         (error,results,fields)=>{
             if(error)
@@ -349,8 +375,22 @@ module.exports = {
               return  callack(error);
             }
             return callback(null,results);
-        }
+        }  
         );
+    }, 
+    updatePassword:(data,callback)=>{
+        pool.query(`update user_registration set password=? where userid=?`,
+        [
+            data.password,
+            data.userid
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callack(error);
+            }
+            return callback(null,results);
+        });
     },
     deleteUser:(data,callback)=>{
         pool.query(`delete from user_registration where id=?`,
