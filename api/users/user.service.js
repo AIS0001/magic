@@ -1,6 +1,7 @@
 const pool = require("../../config/database");
 
 module.exports = {
+    
     create:(data,pwd,uid,callback)=>{
        // console.log(uid);
         pool.query(
@@ -33,11 +34,11 @@ module.exports = {
         );
         pool.query(
           
-        ` INSERT INTO sub_id_registration (userid,empid, cardno, date) 
+        ` INSERT INTO sub_id_registration (empid,userid, cardno, date) 
         VALUES (?, ?,?, ?);`,
    [
-       data.userid,
-       data.empcode,
+    data.empcode,
+    uid,
        data.cardno,
        data.date
    ]
@@ -60,13 +61,14 @@ module.exports = {
         }
         );
     },
-    insertCompanyWallet:(userid,usrtype,uamount,remark,callback)=>{
+    insertCompanyWallet:(userid,usrtype,uamount,dte,remark,callback)=>{
         pool.query(
-            `INSERT INTO company_wallet ( userid, type, amount, remark) VALUES (?, ?, ?, ?);`,
+            `INSERT INTO company_wallet ( userid, type, amount,dte, remark) VALUES (?, ?, ?,?, ?);`,
         [
             userid,
             usrtype,
             uamount,
+            dte,
             remark  
         ],
     
@@ -79,13 +81,14 @@ module.exports = {
         }
         );
     },
-    insertEmployeeWallet:(userid,empid,uamount,remark,callback)=>{
+    insertEmployeeWallet:(userid,empid,uamount,dte1,remark,callback)=>{
         pool.query(
-            `INSERT INTO employee_wallet ( userid, empid, amount, remark) VALUES (?, ?, ?, ?);`,
+            `INSERT INTO employee_wallet ( userid, empid, amount,dte, remark) VALUES (?, ?, ? , ?, ?);`,
         [
             userid,
             empid,
             uamount,
+            dte1,
             remark  
         ],
     
@@ -154,19 +157,20 @@ module.exports = {
         }
         );
     },
-    InsertcashBackIncome:(uid,amount,dte,lmt,ofset ,callback)=>{
+    InsertcashBackIncome:(uid,amount,dte ,callback)=>{
         //check user type
        pool.query( `INSERT INTO cashback (userid, amount, date) VALUES ( ?, ?, ?) `,
            [
                uid,
                amount,
-               dte,
-               ofset
+               dte
+               
                
            ]
                 );
         
     },
+   
 
     InsertProfile:(data,callback)=>{
         //check user type
@@ -294,7 +298,36 @@ module.exports = {
         }
         );
     },
-
+    getAllEmployee:callback=>{
+        pool.query(`select * from user_registration where type="employee"`,
+        [
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    getPoolUsers:(empid,lmt,ofset,callback)=>{
+        pool.query(`select * from sub_id_registration where empid=? AND status="1" limit ? offset ?`,
+        [
+        empid,
+        lmt,
+        ofset
+        ],
+        (error,results,fiels)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+   
     getUserByid:(data,callback)=>{
        // console.log(data.userid);
         pool.query(`select * from user_registration where userid=?`,
@@ -332,6 +365,17 @@ module.exports = {
             return callback(null,results);
         }
         );
+    },
+    getTotalEmployee:(callback)=>{
+        pool.query(`select count(*) as total_emp from user_registration `,
+        [],
+        (error,results,fiels)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        });
     },
     getCurrentUserEmpId:(cardno,callback)=>{
         pool.query(`select empid from sub_id_registration where cardno=?`,

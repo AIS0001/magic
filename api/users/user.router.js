@@ -23,7 +23,6 @@ router.get("/maxlevel",checkToken,maxlevel);
 router.get("/",checkToken,getUsers);
 router.post("/userdata",checkToken,getUserByid);
 
-
 router.post("/updatepassword",checkToken,updateUserPassword);
 router.post("/updateuserrecord",updateUserRecord);
 router.post("/viewproduct",getProductsDetailsByid);

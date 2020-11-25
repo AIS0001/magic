@@ -128,6 +128,18 @@ module.exports = {
         }
         );
     },
+    getEmployeeWallet:(data,callback)=>{
+        pool.query(`SELECT * FROM employee_wallet where empid=? `,
+        [data.empid],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
 
     updateUser:(data,callback)=>{
         pool.query(`update registration set fname=?,lname-?,gender=?,email=?,password=?,contact=? where id=?`,

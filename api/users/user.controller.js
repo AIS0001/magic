@@ -14,6 +14,9 @@ const { create,
     getUsersByEmpID,
     insertToken, getUsers,
     getUserByid,
+    getTotalEmployee,
+    getPoolUsers,
+    getAllEmployee,
     updateUsers,
     updatePassword,
     getProductByid,
@@ -159,6 +162,8 @@ module.exports = {
     },
     createUser: (req, res) => {
 
+        var currentDate = new Date(new Date() - 3600 * 1000 * 3).toISOString();
+
         const body = req.body;
         const salt = genSaltSync(10);
         const empid = body.empcode;
@@ -190,6 +195,8 @@ module.exports = {
         var cardAmount = 500;
         var companyShare = cardAmount * 0.40;
         var empShare = cardAmount * 0.20;
+        var userShare = cardAmount * 0.20;
+
         var poll1UserAmount = 0;
         var poll2UserAmount = 0;
         var poll3UserAmount = 0;
@@ -209,60 +216,253 @@ module.exports = {
                     message: "Unable to get Total user record by empid"
                 });
             }
-            //  console.log(tusers[0].total_users);
+            //console.log(tusers[0].total_users);
 
             const remainAmount = cardAmount - (companyShare + empShare);
-            const pool1Amount = remainAmount * 0.40;
-            const pool2Amount = remainAmount * 0.30;
-            const pool3Amount = remainAmount * 0.20;
-            const pool4Amount = remainAmount * 0.10;
-            poolwiseUsers = Math.round((tusers[0].total_users + Number.EPSILON) * 0.25);
-            poll1UserAmount = pool1Amount / poolwiseUsers;
-            poll2UserAmount = pool2Amount / poolwiseUsers;
-            poll3UserAmount = pool3Amount / poolwiseUsers;
-            poll4UserAmount = pool4Amount / poolwiseUsers;
-
-
+            var userRefIncome = remainAmount * 0.40;
             const usertype = body.type;
-            // console.log(usertype);
             const refid = body.refcode;
-            // console.log(uid);
             const dte = body.date;
+            var uremark = ""
+            var eremark = "ESC"
 
-
-            if (refid != "0") {
-                // console.log(usertype1);
-                // console.log(poll1UserAmount);
-                refIncome(poll1UserAmount, usertype, refid, dte, (err, companywallet) => {
+            if (usertype == "user") {
+                uremark = "User account activation fee";
+               
+                var empAmount = empShare * 0.20; //20% to employee
+                var remainingEmployeeShare = empShare - empAmount;  //Remaining emp share amount
+               var damount=0;
+                //  console.log(empAmount);
+               
+                 insertEmployeeWallet(uid, body.empcode, empAmount, dte, uremark, (err, results) => {
                     if (err) {
                         console.log(err);
-                        return;
-                    }
-                    if (!poolDataresults) {
-                        return res.json({
+                        //    console.log(body);
+                        return res.status(500).json({
+                            status: 500,
                             success: 0,
-                            message: "Something in pool /cashback data calculation"
+                            message: "500 Internal Server Error"
                         });
                     }
+                   
+                })
+            
+
+               if (refid != "0") {
+
+                //Employee Share Calculation
+               
+               //Remaining employee share distribute to all employee
+ 
+               getTotalEmployee((err, cnt) => {
+                   
+                damount = remainingEmployeeShare/cnt[0].total_emp;
+               // console.log(damount);
+                getAllEmployee((err, eresults) => {
+                    // return res.json({ data: results,});
+                    eresults && eresults.map((results1, index) => {
+                        //console.log(results1.userid);
+                        insertEmployeeWallet(results1.userid, body.empcode, damount, dte, uremark, (err, results) => {
+                            if (err) {
+                                console.log(err);
+                                //    console.log(body);
+                                return res.status(500).json({
+                                    status: 500,
+                                    success: 0,
+                                    message: "500 Internal Server Error"
+                                });
+                            }
+                        })
+                       
+                         })
+            })
+            
+            });
+             
+               // Distribute to all employees  remainingEmployeeShare
+                    //User Share Calculation
+
+                    //If  user refer another user  Then user Rs. 200 Share Calculation 40% to user and 60 percent to company
+                    var userAmount = remainAmount * 0.40;
+                  
+                    refIncome(userAmount, usertype, refid, dte, (err, poolDataresults) => {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        if (!poolDataresults) {
+                            return res.json({
+                                success: 0,
+                                message: "Something in pool /cashback data calculation"
+                            });
+                        }
 
 
-                });
+                    });
+
+                    var reainingUserShareAmount = remainAmount - userAmount;
+                    uremark="User Share Remaining Amount";
+                    insertCompanyWallet(uid,usertype,reainingUserShareAmount,dte,uremark, (err, results) => {
+                        if (err) {
+                            console.log(err);
+                            //    console.log(body);
+                            return res.status(500).json({
+                                status: 500,
+                                success: 0,
+                                message: "500 Internal Server Error"
+                            });
+                        }
+                        
+                    })
+
+                    //Direct Refferral Income Generated
+                  /*  refIncome(userRefIncome, usertype, refid, dte, (err, poolDataresults) => {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        }
+                        if (!poolDataresults) {
+                            return res.json({
+                                success: 0,
+                                message: "Something in pool /cashback data calculation"
+                            });
+                        }
+
+
+                    })*/
+
+
+
+                }
+                else {
+
+                    //If no user refferer Then user Rs. 200 Share Calculation
+                    const pool1Amount = remainAmount * 0.40;
+                    const pool2Amount = remainAmount * 0.30;
+                    const pool3Amount = remainAmount * 0.20;
+                    const pool4Amount = remainAmount * 0.10;
+                    poolwiseUsers = Math.round((tusers[0].total_users + Number.EPSILON) * 0.25);
+                    //console.log(poolwiseUsers);
+                    poll1UserAmount = pool1Amount / poolwiseUsers;
+                    poll2UserAmount = pool2Amount / poolwiseUsers;
+                    poll3UserAmount = pool3Amount / poolwiseUsers;
+                    poll4UserAmount = pool4Amount / poolwiseUsers;
+                    //Cash Back Income
+                    //1. Cashback Income 40,30,20,10 from User Share Rs. 200
+                    var start = 0;
+                    var ofset = 0;
+                    getPoolUsers(empid,poolwiseUsers,ofset, (err, results) => {
+                        // return res.json({ data: results,});
+                        results && results.map((results1, index) => {
+                            //console.log(results1.userid);
+                            InsertcashBackIncome(results1.userid, poll1UserAmount, dte, (err, results) => {
+                                console.log(poll1UserAmount);
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                }
+                                if (!poolDataresults) {
+                                    return res.json({
+                                        success: 0,
+                                        message: "Something in pool /cashback data calculation"
+                                    });
+                                }
+                            });
+                        });
+                    }),
+                        ofset = ofset+poolwiseUsers;
+                       //2nd Pool Amount
+                       getPoolUsers(empid,poolwiseUsers,ofset, (err, results) => {
+                        // return res.json({ data: results,});
+                        results && results.map((results1, index) => {
+                            //console.log(results1.userid);
+                            InsertcashBackIncome(results1.userid, poll2UserAmount, dte, (err, results) => {
+                                console.log(poll1UserAmount);
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                }
+                                if (!poolDataresults) {
+                                    return res.json({
+                                        success: 0,
+                                        message: "Something in pool /cashback data calculation"
+                                    });
+                                }
+                            });
+                        });
+                    }),
+                        ofset = ofset+poolwiseUsers;
+                          //3rd Pool Amount
+                          getPoolUsers(empid,poolwiseUsers,ofset, (err, results) => {
+                            // return res.json({ data: results,});
+                            results && results.map((results1, index) => {
+                                //console.log(results1.userid);
+                                InsertcashBackIncome(results1.userid, poll3UserAmount, dte, (err, results) => {
+                                   // console.log(poll1UserAmount);
+                                    if (err) {
+                                        console.log(err);
+                                        return;
+                                    }
+                                    if (!poolDataresults) {
+                                        return res.json({
+                                            success: 0,
+                                            message: "Something in pool /cashback data calculation"
+                                        });
+                                    }
+                                });
+                            });
+                        }),
+                            ofset = ofset+poolwiseUsers;
+                           //4th Pool Amount
+                           getPoolUsers(empid,poolwiseUsers,ofset, (err, results) => {
+                            // return res.json({ data: results,});
+                            results && results.map((results1, index) => {
+                                //console.log(results1.userid);
+                                InsertcashBackIncome(results1.userid, poll4UserAmount, dte, (err, results) => {
+                                    console.log(poll1UserAmount);
+                                    if (err) {
+                                        console.log(err);
+                                        return;
+                                    }
+                                    if (!poolDataresults) {
+                                        return res.json({
+                                            success: 0,
+                                            message: "Something in pool /cashback data calculation"
+                                        });
+                                    }
+                                });
+                            });
+                        })   
+
+                //Cash abck income end
+                  
+                }
+              
+                insertCompanyWallet(uid,usertype,companyShare,dte,uremark,(err,results)=>{
+                    if(err)
+                    {
+                        return res.status(500).json({
+                            status:500,
+                            success:0,
+                            message:err
+                        });
+                    }
+                   
+                })
+
+
+            }
+            else if (usertype1 == "vendor") {
+                uremark = "Vendor  fee";
+            }
+            else if (usertype1 == "employee") {
+                uremark = "Employee Fee  Activated";
 
             }
             else {
-                // console.log("refid 0");
+                uremark = "";
             }
-            //console.log(poolwiseUsers);
-            /* console.log(poll1UserAmount);
-             console.log(poll2UserAmount);
-             console.log(poll3UserAmount);
-             console.log(poll4UserAmount);*/
-            /*  return res.json({
-                  // console.log(pool1Amount);
-                   success:1,
-                   //data:results,
-                   users:tusers 
-               });*/
+
         });
         //////////////////////
         //pool amount distribution
@@ -275,129 +475,6 @@ module.exports = {
             "pool4": poll4UserAmount
         }
 
-        const usertype = body.type;
-        // console.log(usertype);
-        const refid = body.refcode;
-        // console.log(uid);
-        const dte = body.date;
-        const usertype1 = body.type;
-
-        /* if(refid!="0")
-         {
-          // console.log(usertype1);
-           console.log(poll1UserAmount);
-           refIncome(poll1UserAmount,usertype,refid,dte,(err,companywallet)=>{
-               if(err)
-               {
-                   console.log(err);
-                   return;
-               }
-               if(!poolDataresults)
-               {
-                   return res.json({
-                       success:0,
-                       message:"Something in pool /cashback data calculation"
-                   });
-               }
-             
-               
-           });
-         
-         }
-         else
-         {
-             console.log("refid 0");
-         }*/
-        // console.log(usertype);
-        var uremark = ""
-        var eremark = "ESC"
-
-        if (usertype1 == "user") {
-            uremark = "User account activation fee";
-            insertCompanyWallet(uid, usertype, companyShare, uremark, (err, results) => {
-                if (err) {
-                    console.log(err);
-                    //    console.log(body);
-                    return res.status(500).json({
-                        status: 500,
-                        success: 0,
-                        message: "500 Internal Server Error"
-                    });
-                }
-                //console.log(body);
-                /* return res.status(200).json({
-                     // console.log(pool1Amount);
-                      success:1,
-                      status:200
-                  });*/
-            });
-            insertEmployeeWallet(uid, body.empcode, empShare, uremark, (err, results) => {
-                if (err) {
-                    console.log(err);
-                    //    console.log(body);
-                    return res.status(500).json({
-                        status: 500,
-                        success: 0,
-                        message: "500 Internal Server Error"
-                    });
-                }
-                //console.log(body);
-                /* return res.status(200).json({
-                     // console.log(pool1Amount);
-                      success:1,
-                      status:200
-                  });*/
-            });
-            //Cash Back Income
-            //  console.log(poll1UserAmount);
-            var loop = 4;
-            for (i = 0; i < 4; i++) {
-
-                InsertcashBackIncome(uid, poll1UserAmount, dte, poolwiseUsers, poolwiseUsers, (err, results) => {
-                    console.log(poll1UserAmount);
-                    if (err) {
-                        console.log(err);
-                        return;
-                    }
-                    if (!poolDataresults) {
-                        return res.json({
-                            success: 0,
-                            message: "Something in pool /cashback data calculation"
-                        });
-                    }
-                });
-
-            }
-            while (poolwiseUsers >= 1) {
-                cashBackIncome(body.userid, poll1UserAmount, dte, poolwiseUsers, poolwiseUsers, (err, results) => {
-                    if (err) {
-                        console.log(err);
-                        return;
-                    }
-                    if (!poolDataresults) {
-                        return res.json({
-                            success: 0,
-                            message: "Something in pool /cashback data calculation"
-                        });
-                    }
-                });
-                console.log(poll1UserAmount);
-                poolwiseUsers--;
-            }
-            //Cash abck income end
-
-        }
-        else if (usertype1 == "vendor") {
-            uremark = "Vendor  fee";
-        }
-        else if (usertype1 == "employee") {
-            uremark = "Employee Fee  Activated";
-
-        }
-        else {
-            uremark = "";
-        }
-        // res.end();
         create(body, password, uid, (err, results) => {
             if (err) {
                 console.log(err);
@@ -545,13 +622,13 @@ module.exports = {
             }
             if (!results) {
                 return res.json({
-                    status:401,
+                    status: 401,
                     success: 0,
                     message: "Record not found"
                 });
             }
             return res.json({
-                status:200,
+                status: 200,
                 success: 1,
                 data: results
             });
@@ -592,7 +669,7 @@ module.exports = {
             }
             if (!results) {
                 return res.json({
-                    status:200,
+                    status: 200,
                     success: 0,
                     message: "Record not found"
                 });
@@ -606,19 +683,19 @@ module.exports = {
 
     updateUserRecord: (req, res) => {
         const body = req.body;
-       // const salt = genSaltSync(10);
+        // const salt = genSaltSync(10);
         //body.password = hashSync(body.password, salt);
         updateUsers(body, (err, results) => {
             if (err) {
                 console.log(err);
                 return res.json({
-                    status:500,
+                    status: 500,
                     success: 0,
                     data: err
                 });
             }
             return res.json({
-                status:200,
+                status: 200,
                 success: 1,
                 data: "Record updates successfully"
             });
@@ -634,13 +711,13 @@ module.exports = {
             if (err) {
                 console.log(err);
                 return res.json({
-                    status:500,
+                    status: 500,
                     success: 0,
                     data: err
                 });
             }
             return res.json({
-                status:200,
+                status: 200,
                 success: 1,
                 data: "Record updates successfully"
             });

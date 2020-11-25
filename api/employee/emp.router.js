@@ -3,6 +3,7 @@ const { createUser,
     UserByEmpid,
     createProducts,
     VendorByEmpid,
+    viewIncome,
     viewProductsByVendor,
     login} = require("./emp.controller");
 const router = require("express").Router();
@@ -40,6 +41,7 @@ router.post("/create",checkToken,createUser);
 router.get("/",checkToken,getUsers);
 
 router.post("/createproduct",upload,createProducts);
+router.post("/viewempwallet",viewIncome);
 router.post("/viewproductsbyvendor",checkToken,viewProductsByVendor);
 router.get('/image/:imageName', (req,res)=> {
    //open the chrome 
