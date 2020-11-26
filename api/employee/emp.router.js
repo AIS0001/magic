@@ -41,7 +41,7 @@ router.post("/create",checkToken,createUser);
 router.get("/",checkToken,getUsers);
 
 router.post("/createproduct",upload,createProducts);
-router.post("/viewempwallet",viewIncome);
+router.post("/viewempwallet",checkToken,viewIncome);
 router.post("/viewproductsbyvendor",checkToken,viewProductsByVendor);
 router.get('/image/:imageName', (req,res)=> {
    //open the chrome 

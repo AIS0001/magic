@@ -81,6 +81,79 @@ module.exports = {
         }
         );
     },
+    checkkycDetailsExists:(uid,callback)=>{
+        pool.query(`SELECT count(*) as cnt FROM kyc where userid=?  `,
+        [uid ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    }, 
+    getkycDetails:(uid,callback)=>{
+        pool.query(`SELECT * FROM kyc where userid=?  `,
+        [uid ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+    insertKyc:(data,callback)=>{
+        pool.query(
+            `INSERT INTO kyc (userid, name, bank, branch, account, ifsc, pan, adhaar)
+             VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);`,
+        [
+            data.userid,
+            data.name,
+            data.bank,
+            data.branch,
+            data.account,
+            data.ifsc,
+            data.pan,
+            data.adhaar,
+
+        ],
+    
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    updateKyc:(data,callback)=>{
+        pool.query(
+            `UPDATE kyc SET name = ?, bank = ?, branch = ?,
+             account = ?, ifsc = ?, pan = ?, adhaar = ? WHERE kyc.userid = ?;`,
+        [
+            
+            data.name,
+            data.bank,
+            data.branch,
+            data.account,
+            data.ifsc,
+            data.pan,
+            data.adhaar,
+            data.userid,
+
+        ],
+    
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
     insertEmployeeWallet:(userid,empid,uamount,dte1,remark,callback)=>{
         pool.query(
             `INSERT INTO employee_wallet ( userid, empid, amount,dte, remark) VALUES (?, ?, ? , ?, ?);`,

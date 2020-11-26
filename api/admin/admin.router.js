@@ -1,5 +1,6 @@
 const { createUser,insertCategory,
-   
+   viewIncome,
+   viewIncomeByDate,
    getUsers,viewCategories,getUserByid,getVendors,
    getEmployees,updateUser,deleteUser ,
    login
@@ -57,6 +58,8 @@ router.get('/image/:imageName', (req,res)=> {
 //router.get("/updateemployee",checkToken,);? what? //view category must be a get request!ohh
 router.get("/deleteemployee",checkToken,getUsers);
 
+router.post("/viewcompanywallet",viewIncome);
+router.post("/viewcompanywalletbydate",viewIncomeByDate);
 
 router.get("/:id",checkToken,getUserByid);
 router.patch("/",checkToken,updateUser);

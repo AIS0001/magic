@@ -10,6 +10,10 @@ const { create,
     insertCompanyWallet,
     getTotalRefIncome,
     refIncome,
+    insertKyc,
+    updateKyc,
+    getkycDetails,
+    checkkycDetailsExists,
     getRefIncomeByUserId,
     getUsersByEmpID,
     insertToken, getUsers,
@@ -159,6 +163,93 @@ module.exports = {
             });
         });
 
+    },
+    insertKycDetails: (req, res) => {
+        const body = req.body;
+       
+          //   console.log(body.userid);
+          checkkycDetailsExists(body.userid, (err, kyc) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                if (!kyc) {
+                    return res.status(404).json({
+                        success: 0,
+                        message: "Record not found"
+                    });
+                }
+                    if(kyc[0].cnt>0)
+                    {
+                        updateKyc(body, (err, results) => {
+                            if (err) {
+                                console.log(err);
+                                //    console.log(body);
+                                return res.status(500).json({
+                                    status: 500,
+                                    success: 0,
+                                    message: "500 Internal Server Error"
+                                });
+                            }
+                            //console.log(body);
+                            return res.status(200).json({
+                                // console.log(pool1Amount);
+                                status: 200,
+                                success: 1,
+                                message:"KYC updated"
+                            });
+                        });
+      
+                          }
+                    else{       
+                        insertKyc(body, (err, results) => {
+                            if (err) {
+                                console.log(err);
+                                //    console.log(body);
+                                return res.status(500).json({
+                                    status: 500,
+                                    success: 0,
+                                    message: "500 Internal Server Error"
+                                });
+                            }
+                            //console.log(body);
+                            return res.status(200).json({
+                                // console.log(pool1Amount);
+                                status: 200,
+                                success: 1,
+                                message:"KYC Added"
+                            });
+                        });
+                 
+                    }
+                //update kyc
+               
+         
+
+        })
+    
+     
+    },
+    viewKycDetails: (req, res) => {
+        const body = req.body;
+        getkycDetails(body.userid, (err, results) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (!results) {
+                return res.json({
+                    status: 401,
+                    success: 0,
+                    message: "Record not found"
+                });
+            }
+            return res.json({
+                status: 200,
+                success: 1,
+                data: results
+            });
+        });
     },
     createUser: (req, res) => {
 

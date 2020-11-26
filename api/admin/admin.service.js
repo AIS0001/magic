@@ -46,7 +46,34 @@ module.exports = {
 
         );
     },
-
+    getCompanyWallet:(data,callback)=>{
+        pool.query(`SELECT * FROM company_wallet  `,
+        [],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
+    getCompanyWalletByDate:(data,callback)=>{
+        pool.query(`SELECT * FROM company_wallet where dte>=? AND  dte<=?  `,
+        [
+            data.dte1,
+            data.dte2,
+        
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
     getUsers:callback=>{
         pool.query(`select * from user_registration where type="user"`,
         [ ],

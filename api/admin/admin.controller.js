@@ -1,4 +1,6 @@
-const { create,getUsers,getUserByid,viewCategory,createCategory,getVendorsmodel,getEmployee,updateUser,deleteUser, getUserByuserEmail } = require("./admin.service");
+const { create,getUsers,getUserByid,viewCategory,createCategory,getVendorsmodel,
+    getCompanyWallet,
+    getEmployee,updateUser,deleteUser, getUserByuserEmail } = require("./admin.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
@@ -25,7 +27,58 @@ module.exports ={
 
         });
     },
-
+    viewIncomeByDate:(req,res)=>{
+        const body = req.body;
+        getCompanyWallet(body,(err,results)=>{
+            if(err)
+            {
+                return res.json({
+                    status:500,
+                    success:0,
+                    message:err
+                });
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
+    viewIncome:(req,res)=>{
+        const body = req.body;
+        getCompanyWallet(body,(err,results)=>{
+            if(err)
+            {
+                return res.json({
+                    status:500,
+                    success:0,
+                    message:err
+                });
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
     insertCategory:(req,res)=>{
         let gallary = '';
         req.files['gallary'].forEach(el => {

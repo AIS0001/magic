@@ -118,6 +118,32 @@ module.exports ={
             });
         });
     },
+     viewIncome:(req,res)=>{
+        const body = req.body;
+        getEmployeeWallet(body,(err,results)=>{
+            if(err)
+            {
+                return res.json({
+                    status:500,
+                    success:0,
+                    message:err
+                });
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
 
     UserByid:(req,res)=>{
         const body = req.body;
