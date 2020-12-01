@@ -46,7 +46,9 @@ module.exports ={
             cat_name: req.body.cat_name, 
             prod_id: req.body.prod_id, 
             prod_name: req.body.prod_name, 
+            unit: req.body.unit, 
             price: req.body.price, 
+            discount_price: req.body.discount_price, 
             desc: req.body.desc, 
             gallary: gallary
         },(err,results)=>{

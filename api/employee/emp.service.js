@@ -30,15 +30,17 @@ module.exports = {
 
     createProduct:(data,callback)=>{
         pool.query(
-            `INSERT INTO products ( userid, vendorid, cat_name, prod_id, prod_name, price, description, gallary, flag) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, '1');`,
+            `INSERT INTO products ( userid, vendorid, cat_name, prod_id, prod_name,unit, price,discount_price, description, gallary, flag) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, '1');`,
         [
             data.userid,
             data.vendorid,
             data.cat_name,
             data.prod_id,
             data.prod_name,
+            data.unit,
             data.price,
+            data.discount_price,
             data.desc,
             data.gallary
         ],
