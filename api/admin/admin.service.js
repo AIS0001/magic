@@ -156,6 +156,21 @@ module.exports = {
         }
         );
     },
+    activateUser:(data,callback)=>{
+        pool.query(`update user_registration set flag=? where userid=?`,
+        [
+            data.flag,
+            data.userid
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callack(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
     deleteUser:(data,callback)=>{
         pool.query(`delete from registration where id=?`,
         [data.id],
@@ -181,5 +196,6 @@ module.exports = {
             }
         );
     }
+
 
 };

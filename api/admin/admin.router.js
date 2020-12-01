@@ -1,8 +1,13 @@
 const { createUser,insertCategory,
    viewIncome,
    viewIncomeByDate,
-   getUsers,viewCategories,getUserByid,getVendors,
-   getEmployees,updateUser,deleteUser ,
+   userActivate,
+   getUsers,viewCategories,
+   getVendors,
+   getEmployees,
+   updateUser,
+   deleteUser ,
+   
    login
 } = require("./admin.controller");
 const router = require("express").Router();
@@ -61,7 +66,10 @@ router.get("/deleteemployee",checkToken,getUsers);
 router.post("/viewcompanywallet",viewIncome);
 router.post("/viewcompanywalletbydate",viewIncomeByDate);
 
-router.get("/:id",checkToken,getUserByid);
+router.post("/changestatus",checkToken,userActivate);
+
+
+
 router.patch("/",checkToken,updateUser);
 router.delete("/",checkToken,deleteUser);
 router.post("/login",login);

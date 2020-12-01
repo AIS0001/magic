@@ -2,16 +2,18 @@ const pool = require("../../config/database");
 
 module.exports = {
     
-    create:(data,pwd,uid,callback)=>{
+    create:(data,pwd,uid,level,callback)=>{
        // console.log(uid);
         pool.query(
-            `INSERT INTO user_registration ( userid, password, cname, contact, city, address, pincode, date, empcode, refcode, cardno, payment_mode,type)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?)`,
+            `INSERT INTO user_registration ( userid, password, cname, contact, email, state, city, address, pincode, date, empcode, refcode, cardno, amount, payment_mode,level,type)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [   
             uid, 
             pwd,
             data.cname,
             data.contact,
+            data.email,
+            data.state,
             data.city,
             data.address,
             data.pincode,
@@ -19,7 +21,9 @@ module.exports = {
             data.empcode,
             data.refcode,
             data.cardno,
+            data.amount,
             data.payment_mode,
+            level,
             data.type,
         ],
     
@@ -103,6 +107,28 @@ module.exports = {
             return callback(null,results);
         } );
     },
+    getsponsorLevel:(refid,callback)=>{
+        pool.query(`SELECT level FROM user_registration where userid=?  `,
+        [refid ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
+     getUserIdByLevel:(level,callback)=>{
+        pool.query(`SELECT * FROM user_registration where level=?  `,
+        [level ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        } );
+    },
     insertKyc:(data,callback)=>{
         pool.query(
             `INSERT INTO kyc (userid, name, bank, branch, account, ifsc, pan, adhaar)
@@ -117,6 +143,26 @@ module.exports = {
             data.pan,
             data.adhaar,
 
+        ],
+    
+        (error,results,fields)=>{
+            if(error)
+            {
+                return callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    }, 
+    insertlevelincome:(data,pid,uid,amount,callback)=>{
+        pool.query(
+            `INSERT INTO level_income ( parent_id, child_id, amount, createddate) 
+            VALUES ( ?, ?, ?, ?);`,
+        [
+            pid,
+            uid,
+            amount,
+            data.date,
         ],
     
         (error,results,fields)=>{
@@ -154,12 +200,13 @@ module.exports = {
         }
         );
     },
-    insertEmployeeWallet:(userid,empid,uamount,dte1,remark,callback)=>{
+    insertEmployeeWallet:(userid,empid,refid,uamount,dte1,remark,callback)=>{
         pool.query(
-            `INSERT INTO employee_wallet ( userid, empid, amount,dte, remark) VALUES (?, ?, ? , ?, ?);`,
+            `INSERT INTO employee_wallet ( userid, empid,refid, amount,dte, remark) VALUES (?, ?,?, ? , ?, ?);`,
         [
             userid,
             empid,
+            refid,
             uamount,
             dte1,
             remark  
@@ -176,8 +223,8 @@ module.exports = {
     },
     insertCartItems:(data,callback)=>{
         pool.query(
-            `INSERT INTO cart (userid, vendorid, item_name, item_code, cat_name, cat_id, qty, price, amount, created_date, flag)
-             VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '1');`,
+            `INSERT INTO cart (userid, vendorid, item_name, item_code, cat_name, cat_id, qty,unit, price, amount, created_date, flag)
+             VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '1');`,
         [
             data.userid,
             data.vendorid,
@@ -186,6 +233,7 @@ module.exports = {
             data.cat_name,
             data.cat_id,
             data.qty,
+            data.unit,
             data.price,
             data.amount,
             data.created_date
@@ -464,7 +512,7 @@ module.exports = {
     },
 
     getMaxLevel:(callback)=>{
-        pool.query(`select max(id) as id from sub_id_registration `,
+        pool.query(`select max(level) as level from user_registration `,
         [],
         (error,results,fields)=>{
             if(error)

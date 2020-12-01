@@ -11,8 +11,12 @@ const { create,
     getTotalRefIncome,
     refIncome,
     insertKyc,
+    getUserIdByLevel,
+    insertlevelincome,
     updateKyc,
+    activateUser,
     getkycDetails,
+    getsponsorLevel,
     checkkycDetailsExists,
     getRefIncomeByUserId,
     getUsersByEmpID,
@@ -164,6 +168,7 @@ module.exports = {
         });
 
     },
+   
     insertKycDetails: (req, res) => {
         const body = req.body;
        
@@ -325,7 +330,7 @@ module.exports = {
                var damount=0;
                 //  console.log(empAmount);
                
-                 insertEmployeeWallet(uid, body.empcode, empAmount, dte, uremark, (err, results) => {
+                 insertEmployeeWallet(uid, body.empcode,body.refcode, empAmount, dte, uremark, (err, results) => {
                     if (err) {
                         console.log(err);
                         //    console.log(body);
@@ -387,13 +392,15 @@ module.exports = {
                                 message: "Something in pool /cashback data calculation"
                             });
                         }
+                     //   console.log(poolDataresults);
 
 
                     });
 
                     var reainingUserShareAmount = remainAmount - userAmount;
                     uremark="User Share Remaining Amount";
-                    insertCompanyWallet(uid,usertype,reainingUserShareAmount,dte,uremark, (err, results) => {
+                //    insert remaining 120 to company wallet
+                         insertCompanyWallet(uid,usertype,reainingUserShareAmount,dte,uremark, (err, results) => {
                         if (err) {
                             console.log(err);
                             //    console.log(body);
@@ -406,6 +413,139 @@ module.exports = {
                         
                     })
 
+                    //insert level income
+   /*  getsponsorLevel(refid,(err, results) => {
+        if (err) {
+            console.log(err);
+            //    console.log(body);
+            return res.status(500).json({
+                status: 500,
+                success: 0,
+                message: "500 Internal Server Error create"
+            });
+        }
+       //insert level income
+       var ulevel = results[0].level-1; //level 1 income 25%
+        
+       //getuseridbylevel
+       getUserIdByLevel(ulevel,(err, level1) => {
+        if (err) {
+            console.log(err);
+            //    console.log(body);
+            return res.status(500).json({
+                status: 500,
+                success: 0,
+                message: "500 Internal Server Error create"
+            });
+        }
+        //insert level income
+        var amount1 = reainingUserShareAmount*0.25;
+        insertlevelincome(body,level1[0].userid,  uid,amount1, (err, results) => {
+            if (err) {
+                console.log(err);
+                //    console.log(body);
+                return res.status(500).json({
+                    status: 500,
+                    success: 0,
+                    message: "500 Internal Server Error create"
+                });
+            }
+            //console.log(body);
+         
+        });
+        //get employee id by cardno
+    })
+    ulevel = ulevel-1; //level 2 income 10%
+    //getuseridbylevel
+    getUserIdByLevel(ulevel,(err, level2) => {
+        if (err) {
+            console.log(err);
+            //    console.log(body);
+            return res.status(500).json({
+                status: 500,
+                success: 0,
+                message: "500 Internal Server Error create"
+            });
+        }
+        var amount2 = reainingUserShareAmount*0.10;
+        insertlevelincome(body,level2[0].userid, uid,amount2, (err, results) => {
+            if (err) {
+                console.log(err);
+                //    console.log(body);
+                return res.status(500).json({
+                    status: 500,
+                    success: 0,
+                    message: "500 Internal Server Error create"
+                });
+            }
+            //console.log(body);
+         
+        });
+        //get employee id by cardno
+    })
+    ulevel = ulevel-1; //level 3 income 10%
+        //getuseridbylevel
+        getUserIdByLevel(ulevel,(err, level3) => {
+            if (err) {
+                console.log(err);
+                //    console.log(body);
+                return res.status(500).json({
+                    status: 500,
+                    success: 0,
+                    message: "500 Internal Server Error create"
+                });
+            }
+            var amount3 = reainingUserShareAmount*0.10;
+            insertlevelincome(level3[0].userid, uid,amount3, (err, results) => {
+                if (err) {
+                    console.log(err);
+                    //    console.log(body);
+                    return res.status(500).json({
+                        status: 500,
+                        success: 0,
+                        message: "500 Internal Server Error create"
+                    });
+                }
+                //console.log(body);
+             
+            });
+            //get employee id by cardno
+        })
+    ulevel = ulevel-1; //level 4 income 10%
+    //getuseridbylevel
+    getUserIdByLevel(ulevel,(err, level4) => {
+        if (err) {
+            console.log(err);
+            //    console.log(body);
+            return res.status(500).json({
+                status: 500,
+                success: 0,
+                message: "500 Internal Server Error create"
+            });
+        }
+        var amount4 = reainingUserShareAmount*0.10;
+        console.log(ulevel);
+        insertlevelincome(body,level4[0].userid, uid,amount4, (err, results) => {
+            if (err) {
+                console.log(err);
+                //    console.log(body);
+                return res.status(500).json({
+                    status: 500,
+                    success: 0,
+                    message: "500 Internal Server Error create"
+                });
+            }
+            //console.log(body);
+         
+        });
+        //get employee id by cardno
+    })
+      
+    });
+    //get employee id by cardno
+
+*/
+//level incoem end
                     //Direct Refferral Income Generated
                   /*  refIncome(userRefIncome, usertype, refid, dte, (err, poolDataresults) => {
                         if (err) {
@@ -540,53 +680,127 @@ module.exports = {
                     }
                    
                 })
-
+               
+             
+                getMaxLevel((err, results) => {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    if (!results) {
+                        return res.json({
+                            success: 0,
+                            message: "Record not found"
+                        });
+                    }
+                    const level = results[0].level+1;
+                    create(body, password, uid,level, (err, results) => {
+                        if (err) {
+                            console.log(err);
+                            //    console.log(body);
+                            return res.status(500).json({
+                                status: 500,
+                                success: 0,
+                                message: "500 Internal Server Error create"
+                            });
+                        }
+                        //console.log(body);
+                        return res.status(200).json({
+                            // console.log(pool1Amount);
+            
+                            success: 1,
+                            status: 200,
+                            message: "User created Successfully"
+                        });
+                    });
+                    //get employee id by cardno
+            
+                   
+                });
 
             }
-            else if (usertype1 == "vendor") {
+            else if (usertype == "vendor") {
                 uremark = "Vendor  fee";
+                level=0;
+                create(body, password, uid,level, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        //    console.log(body);
+                        return res.status(500).json({
+                            status: 500,
+                            success: 0,
+                            message: "500 Internal Server Error create"
+                        });
+                    }
+                    //console.log(body);
+                    return res.status(200).json({
+                        // console.log(pool1Amount);
+        
+                        success: 1,
+                        status: 200,
+                        message: "User created Successfully"
+                    });
+                });
+                //get employee id by cardno
+        
             }
-            else if (usertype1 == "employee") {
+            else if (usertype == "employee") {
                 uremark = "Employee Fee  Activated";
+                level=0;
+                create(body, password, uid,level, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        //    console.log(body);
+                        return res.status(500).json({
+                            status: 500,
+                            success: 0,
+                            message: "500 Internal Server Error create"
+                        });
+                    }
+                    //console.log(body);
+                    return res.status(200).json({
+                        // console.log(pool1Amount);
+        
+                        success: 1,
+                        status: 200,
+                        message: "User created Successfully"
+                    });
+                });
+                //get employee id by cardno
+        
 
             }
             else {
                 uremark = "";
-            }
-
-        });
-        //////////////////////
-        //pool amount distribution
-        ///////////////////
-
-        const poolDatas = {
-            "pool1": poll1UserAmount,
-            "pool2": poll2UserAmount,
-            "pool3": poll3UserAmount,
-            "pool4": poll4UserAmount
-        }
-
-        create(body, password, uid, (err, results) => {
-            if (err) {
-                console.log(err);
-                //    console.log(body);
-                return res.status(500).json({
-                    status: 500,
-                    success: 0,
-                    message: "500 Internal Server Error create"
+                level=0;
+                create(body, password, uid,level, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        //    console.log(body);
+                        return res.status(500).json({
+                            status: 500,
+                            success: 0,
+                            message: "500 Internal Server Error create"
+                        });
+                    }
+                    //console.log(body);
+                    return res.status(200).json({
+                        // console.log(pool1Amount);
+        
+                        success: 1,
+                        status: 200,
+                        message: "User created Successfully"
+                    });
                 });
+                //get employee id by cardno
+        
             }
-            //console.log(body);
-            return res.status(200).json({
-                // console.log(pool1Amount);
 
-                success: 1,
-                status: 200,
-                message: "User created Successfully"
-            });
         });
-        //get employee id by cardno
+  
 
+     
+       
     },
     //on referesh get user token details
     userToken: (req, res) => {
@@ -816,6 +1030,7 @@ module.exports = {
 
 
     },
+  
 
     deleteUser: (req, res) => {
         // const id = req.param.id;

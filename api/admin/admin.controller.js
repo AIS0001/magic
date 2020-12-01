@@ -1,6 +1,14 @@
-const { create,getUsers,getUserByid,viewCategory,createCategory,getVendorsmodel,
+const { create,getUsers,getUserByid,
+    viewCategory,
+    createCategory,
+    getVendorsmodel,
     getCompanyWallet,
-    getEmployee,updateUser,deleteUser, getUserByuserEmail } = require("./admin.service");
+    activateUser,
+    
+    getEmployee,
+    updateUser,
+    deleteUser, 
+    getUserByuserEmail } = require("./admin.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
@@ -78,6 +86,25 @@ module.exports ={
                 data:results 
             });
         });
+    },
+    userActivate:(req, res) => {
+        const body = req.body;
+        activateUser(body, (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.json({
+                    status: 500,
+                    success: 0,
+                    data: err
+                });
+            }
+            return res.json({
+                status: 200,
+                success: 1,
+                data: "Record updates successfully"
+            });
+        });
+
     },
     insertCategory:(req,res)=>{
         let gallary = '';
@@ -160,6 +187,8 @@ module.exports ={
             });
         });
     },
+   
+    
     getUsers:(req,res)=>{
         getUsers((err,results)=>{
             if(err)

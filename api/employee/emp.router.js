@@ -5,6 +5,8 @@ const { createUser,
     VendorByEmpid,
     viewIncome,
     viewProductsByVendor,
+    viewdirectIncome,
+    viewindirectIncome,
     login} = require("./emp.controller");
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token_validation");
@@ -52,6 +54,10 @@ router.get('/image/:imageName', (req,res)=> {
 //router.post("/viewallusers",checkToken,UserByid);
 router.post("/viewusers",UserByEmpid);
 router.post("/viewvendors",VendorByEmpid);
+
+router.post("/empdirectincome",checkToken,viewdirectIncome);
+router.post("/empindirectincome",checkToken,viewindirectIncome);
+
 router.post("/login",login);
 
 

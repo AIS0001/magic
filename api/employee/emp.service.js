@@ -140,6 +140,34 @@ module.exports = {
         }
         );
     },
+    directIncome:(data,callback)=>{
+        pool.query(`SELECT * FROM employee_wallet where empid=? AND refid='0' `,
+        [data.empid],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    }, 
+    indirectIncome:(data,callback)=>{
+        pool.query(`SELECT * FROM employee_wallet where empid=? AND refid=? `,
+        [
+            data.empid,
+            data.refid
+        
+        ],
+        (error,results,fields)=>{
+            if(error)
+            {
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        );
+    },
 
     updateUser:(data,callback)=>{
         pool.query(`update registration set fname=?,lname-?,gender=?,email=?,password=?,contact=? where id=?`,

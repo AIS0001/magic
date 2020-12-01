@@ -3,6 +3,7 @@ const { createUser,maxlevel,insertCart,updateUserPassword,
     addCategory,cashBackIncome,
     insertKycDetails,
     viewKycDetails,
+    insertLevelIncome,
     userToken,referralIncome,totalRefIncome,getUsers,
     getUserByid,updateUserRecord,getProductsDetailsByid,
     deleteUser ,login} = require("./user.controller");
@@ -26,6 +27,7 @@ router.get("/",checkToken,getUsers);
 router.post("/userdata",checkToken,getUserByid);
 
 router.post("/updatepassword",checkToken,updateUserPassword);
+
 router.post("/insertkyc",checkToken,insertKycDetails);
 router.post("/viewkyc",checkToken,viewKycDetails);
 router.post("/updateuserrecord",updateUserRecord);

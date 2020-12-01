@@ -1,5 +1,8 @@
 const { create,getUsers,viewProductsByVendorid,getEmployeeWallet,
-    createProduct,getUserByid,getUserByEmpid,getVendorByEmpid,updateUser,deleteUser, getUserByuserEmail } = require("./emp.service");
+    createProduct,getUserByid,
+    directIncome,
+    indirectIncome,
+    getUserByEmpid,getVendorByEmpid,updateUser,deleteUser, getUserByuserEmail } = require("./emp.service");
 const { genSaltSync,hashSync,compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 module.exports ={
@@ -118,9 +121,36 @@ module.exports ={
             });
         });
     },
-     viewIncome:(req,res)=>{
+     viewdirectIncome:(req,res)=>{
         const body = req.body;
-        getEmployeeWallet(body,(err,results)=>{
+        directIncome(body,(err,results)=>{
+            if(err)
+            {
+                return res.json({
+                    status:500,
+                    success:0,
+                    message:err
+                });
+            }
+            if(!results)
+            {
+                return res.json({
+                    status:401,
+                    success:0,
+                    message:"Record not found"
+                });
+            }
+            return res.json({
+                status:200,
+                success:1,
+                data:results 
+            });
+        });
+    },
+    viewindirectIncome:(req,res)=>{
+        const body = req.body;
+        //console.log(body);
+        indirectIncome(body,(err,results)=>{
             if(err)
             {
                 return res.json({
